@@ -1,21 +1,20 @@
 #include <FastLED.h>
+
 #include "NES_Controller.h"
 #include "Patterns.h"
 #include "GhostScreen.h"
+#include "OuterRing.h"
 
-#define GHOST_LED_DATA_PIN            2         //  The WS2801 string data pin for the inner ghost screen
-#define GHOST_LED_CLOCK_PIN           3         //  The WS2801 string clock pin for the inner ghost screen
-#define OUTER_LED_DATA_PIN            4         //  The WS2801 string data pin for the outer ring lights
-#define OUTER_LED_CLOCK_PIN           5         //  The WS2801 string clock pin for the outer ring lights
+#define GHOST_SCREEN_DATA_PIN         2         //  The WS2801 string data pin for the inner ghost screen
+#define GHOST_SCREEN_CLOCK_PIN        4         //  The WS2801 string clock pin for the inner ghost screen
+#define OUTER_RING_DATA_PIN            6         //  The WS2801 string data pin for the outer ring lights
+#define OUTER_RING_CLOCK_PIN           8         //  The WS2801 string clock pin for the outer ring lights
 
-#define NES_DATA_PIN            6
-#define NES_CLOCK_PIN           7
-#define NES_LATCH_PIN           8
+#define NES_DATA_PIN            10
+#define NES_CLOCK_PIN           11
+#define NES_LATCH_PIN           12
 
-#define BRIGHTNESS              60                                //  The number (0 to 200) for the brightness setting)
-
-#define OUTER_RING_LENGTH       76
-#define NUM_RING_LEDS_VIRTUAL		OUTER_RING_LENGTH + 10  	//  The number of LEDs to virtually travel. AKA the loop will continue until the position passes this number
+#define BRIGHTNESS              20                                //  The number (0 to 200) for the brightness setting)
 
 #define TETRIS_BOARD_START_X    7
 #define TETRIS_BOARD_START_Y    -2
@@ -25,14 +24,12 @@
 #define GHOST_CART_HARDWARE     false
 
 //  "Iterate" button, which when pressed will iterate to the next pattern
-#define ITERATE_BUTTON_DELAY    400
 unsigned long iterateButtonTimer = 0;
 byte patternIndex = 0;
 
 NES_Controller nesController(NES_DATA_PIN, NES_CLOCK_PIN, NES_LATCH_PIN);
 GhostScreen ghostScreen;
-
-CRGB LEDs_Outer[OUTER_RING_LENGTH];
+OuterRing outerRing;
 
 void SerialProgramInit() {
   Serial.begin(9600);
@@ -131,13 +128,13 @@ void RainbowFlow2(int hueChangeSpeed = 1, bool berzerk = false)
   if (IsNextFrameReady())
   {
     static int rainbowPosition = 0;
-    for (int i = 0; i < GHOST_PANEL_WIDTH * 2; ++i)
+    for (int i = 0; i < ghostScreen.SCREEN_WIDTH * 2; ++i)
     {
-      CRGB color = Wheel(((i * 1024 / GHOST_NUM_LEDS) + rainbowPosition) & 255);
-      for (int j = 0; j < GHOST_PANEL_HEIGHT; ++j)
+      CRGB color = Wheel(((i * 1024 / ghostScreen.LED_COUNT) + rainbowPosition) & 255);
+      for (int j = 0; j < ghostScreen.SCREEN_HEIGHT; ++j)
       {
-        if (j < 0 || j >= GHOST_PANEL_WIDTH) continue;
-        if ((i - j) < 0 || (i - j) >= GHOST_PANEL_WIDTH) continue;
+        if (j < 0 || j >= ghostScreen.SCREEN_WIDTH) continue;
+        if ((i - j) < 0 || (i - j) >= ghostScreen.SCREEN_WIDTH) continue;
 
         ghostScreen.SetLEDByColorRef(i - j, j, color);
         if (berzerk) rainbowPosition += hueChangeSpeed;
@@ -401,7 +398,7 @@ void LetterMoveThrough_BRC(int x = 21, int y = 6, int frameLength = 60, int anim
   DrawLetter_C(x + 32 - frame, y, 4);
 }
 
-void PacManChompDanceThrough(int x = -6, int y = 7, int frameLength = 80, int animationFrameCount = 46, int frame = 255)
+void PacManChompDanceThrough(int x = -6, int y = 7, int frameLength = 100, int animationFrameCount = 46, int frame = 255)
 {
   if (frame == 255) frame = GetFrame(animationFrameCount, frameLength);
   
@@ -567,18 +564,18 @@ void DrawMsPacManChomp03(int x, int y, byte color1, byte color2, byte color3)
   ghostScreen.SetLightsByColorIndex(x - 2, y + 6, 5, color1);
 }
 
-void MsPacManChompDanceThrough(int frameLength = 80, int animationFrameCount = 48)
+void MsPacManChompDanceThrough(int frameLength = 100, int animationFrameCount = 48)
 {
   int frame = GetFrame(animationFrameCount, frameLength);
   
-  if (frame % 8 == 0)       DrawMsPacManChomp01(GHOST_PANEL_WIDTH - frame + 6, 7, 4, 1, 3);
-  else if (frame % 8 == 1)  DrawMsPacManChomp01(GHOST_PANEL_WIDTH - frame + 6, 7, 4, 1, 3);
-  else if (frame % 8 == 2)  DrawMsPacManChomp02(GHOST_PANEL_WIDTH - frame + 6, 7, 4, 1, 3);
-  else if (frame % 8 == 3)  DrawMsPacManChomp02(GHOST_PANEL_WIDTH - frame + 6, 7, 4, 1, 3);
-  else if (frame % 8 == 4)  DrawMsPacManChomp03(GHOST_PANEL_WIDTH - frame + 6, 7, 4, 1, 3);
-  else if (frame % 8 == 5)  DrawMsPacManChomp03(GHOST_PANEL_WIDTH - frame + 6, 7, 4, 1, 3);
-  else if (frame % 8 == 6)  DrawMsPacManChomp02(GHOST_PANEL_WIDTH - frame + 6, 7, 4, 1, 3);
-  else                      DrawMsPacManChomp02(GHOST_PANEL_WIDTH - frame + 6, 7, 4, 1, 3);
+  if (frame % 8 == 0)       DrawMsPacManChomp01(ghostScreen.SCREEN_WIDTH - frame + 6, 7, 4, 1, 3);
+  else if (frame % 8 == 1)  DrawMsPacManChomp01(ghostScreen.SCREEN_WIDTH - frame + 6, 7, 4, 1, 3);
+  else if (frame % 8 == 2)  DrawMsPacManChomp02(ghostScreen.SCREEN_WIDTH - frame + 6, 7, 4, 1, 3);
+  else if (frame % 8 == 3)  DrawMsPacManChomp02(ghostScreen.SCREEN_WIDTH - frame + 6, 7, 4, 1, 3);
+  else if (frame % 8 == 4)  DrawMsPacManChomp03(ghostScreen.SCREEN_WIDTH - frame + 6, 7, 4, 1, 3);
+  else if (frame % 8 == 5)  DrawMsPacManChomp03(ghostScreen.SCREEN_WIDTH - frame + 6, 7, 4, 1, 3);
+  else if (frame % 8 == 6)  DrawMsPacManChomp02(ghostScreen.SCREEN_WIDTH - frame + 6, 7, 4, 1, 3);
+  else                      DrawMsPacManChomp02(ghostScreen.SCREEN_WIDTH - frame + 6, 7, 4, 1, 3);
 }
 
 void DrawPacManGhostWalk01(int x, int y, byte bodyColor = 50, byte eyeWhite = 7, byte eyeBall = 0)
@@ -681,7 +678,7 @@ void PacManGhostDanceThrough(int x = 6, int y = 14, int frameLength = 48, int bo
   else if (frame % 4 == 3)  DrawPacManGhostWalk02(frame + x, y, body, eyeWhite, eyeBall);
 }
 
-void PacManChompDanceThroughPlusGhost(int frameLength = 80, int animationFrameCount = 140)
+void PacManChompDanceThroughPlusGhost(int frameLength = 100, int animationFrameCount = 140)
 {
   int frame = GetFrame(animationFrameCount, frameLength);
 
@@ -3413,26 +3410,26 @@ void setup()
 {
   //  Setup the LED strips up for both inner ghost and outer ring
   if (GHOST_CART_HARDWARE) {
-    FastLED.addLeds<WS2801, GHOST_LED_DATA_PIN, GHOST_LED_CLOCK_PIN, RGB>(ghostScreen.LEDs, GHOST_NUM_LEDS).setCorrection( TypicalLEDStrip );
-    FastLED.addLeds<WS2801, OUTER_LED_DATA_PIN, OUTER_LED_CLOCK_PIN, RGB>(LEDs_Outer, OUTER_RING_LENGTH).setCorrection( TypicalLEDStrip );
+    FastLED.addLeds<WS2801, GHOST_SCREEN_DATA_PIN, GHOST_SCREEN_CLOCK_PIN, RGB>(ghostScreen.LEDs, ghostScreen.LED_COUNT).setCorrection( TypicalLEDStrip );
+    FastLED.addLeds<WS2801, OUTER_RING_DATA_PIN, OUTER_RING_CLOCK_PIN, RGB>(outerRing.LEDs, outerRing.LED_COUNT).setCorrection( TypicalLEDStrip );
   }
   else {
-    FastLED.addLeds<WS2812B, GHOST_LED_DATA_PIN, GRB>(ghostScreen.LEDs, GHOST_NUM_LEDS).setCorrection( TypicalLEDStrip );
-    FastLED.addLeds<WS2812B, OUTER_LED_DATA_PIN, GRB>(LEDs_Outer, OUTER_RING_LENGTH).setCorrection( TypicalLEDStrip );
+    FastLED.addLeds<WS2812B, GHOST_SCREEN_DATA_PIN, GRB>(ghostScreen.LEDs, ghostScreen.LED_COUNT).setCorrection( TypicalLEDStrip );
+    FastLED.addLeds<WS2812B, OUTER_RING_DATA_PIN, GRB>(outerRing.LEDs, outerRing.LED_COUNT).setCorrection( TypicalLEDStrip );
   }     
 
   //  Set all LED brightness and clear all strips
   FastLED.setBrightness(BRIGHTNESS);
   ghostScreen.ClearScreen();
-  ClearStrip(LEDs_Outer, OUTER_RING_LENGTH);
+  ClearStrip(outerRing.LEDs, outerRing.LED_COUNT);
   FastLED.show();
   
   //  Seed the random number generator
   randomSeed(analogRead(0));
   
   //  Set the "Iterate" button timer to the current time
-  iterateButtonTimer = millis();
-  IteratePatternIndex(11);
+  ghostScreen.ButtonIterationTimer = millis();
+  IteratePatternIndex(0);
 
   SerialProgramInit();
 
@@ -3445,27 +3442,29 @@ void loop()
   
   //  Determine if the current time is past the button delay timer
   unsigned long currentMillis = millis();
-  if ((currentMillis > iterateButtonTimer) && (nesController.CheckButton(NES_A_BUTTON))) {
-    Serial.println("NES Controller [A] Button pressed, iterating to next pattern...");
-    iterateButtonTimer = currentMillis + ITERATE_BUTTON_DELAY;
+  if ((currentMillis > ghostScreen.ButtonIterationTimer) && (nesController.CheckButton(NES_A_BUTTON))) {
+    Serial.println("NES Controller [A] Button pressed, iterating to next pattern on Ghost Screen...");
+    ghostScreen.ButtonIterationTimer = currentMillis + ghostScreen.BUTTON_DELAY;
     IteratePatternIndex();
   }
 
   switch (patternIndex)
   {
-    case 0:   Serial.println("RainbowFlow1()");                       RainbowFlow1(ghostScreen.LEDs, GHOST_NUM_LEDS);                             break;
+    case 0:   Serial.println("RainbowFlow1()");                       RainbowFlow1(ghostScreen.LEDs, ghostScreen.LED_COUNT);                      break;
     case 1:   Serial.println("RainbowFlow2()");                       RainbowFlow2(10, false);                                                    break;
-    case 2:   Serial.println("ColorFire()");                          ColorFire(ghostScreen.LEDs, GHOST_NUM_LEDS);                                break;
-    case 3:   Serial.println("GlowFlow()");                           GlowFlow(ghostScreen.LEDs, GHOST_NUM_LEDS, 10, 100);                        break;
+    case 2:   Serial.println("ColorFire()");                          ColorFire(ghostScreen.LEDs, ghostScreen.LED_COUNT);                         break;
+    case 3:   Serial.println("GlowFlow()");                           GlowFlow(ghostScreen.LEDs, ghostScreen.LED_COUNT, 10, 100);                 break;
     case 4:   Serial.println("PacManChompDanceThrough()");            ghostScreen.ClearScreen(); PacManChompDanceThrough();                       break;
     case 5:   Serial.println("PacManChompDanceThroughPlusGhost()");   ghostScreen.ClearScreen(); PacManChompDanceThroughPlusGhost();              break;
     case 6:   Serial.println("MsPacManChompDanceThrough()");          ghostScreen.ClearScreen(); MsPacManChompDanceThrough();                     break;
     case 7:   Serial.println("SpaceInvaderDanceThrough()");           ghostScreen.ClearScreen(); SpaceInvaderDanceThrough();                      break;
     case 8:   Serial.println("MegaManRunThrough()");                  ghostScreen.ClearScreen(); MegaManRunThrough();                             break;
     case 9:   Serial.println("MarioWarpThrough()");                   ghostScreen.ClearScreen(); MarioWarpThrough();                              break;
-    case 10:  Serial.print("LetterMoveThrough_BRC()");                ghostScreen.ClearScreen(); LetterMoveThrough_BRC();                         break;
+    case 10:  Serial.println("LetterMoveThrough_BRC()");              ghostScreen.ClearScreen(); LetterMoveThrough_BRC();                         break;
     //case 11:  /*Serial.println("Tetris()");*/                         ghostScreen.ClearScreen(); Tetris();                                        break;
     default:  patternIndex = 0;                                       break;
   }
   FastLED.show();
+
+  outerRing.Pacman();
 }

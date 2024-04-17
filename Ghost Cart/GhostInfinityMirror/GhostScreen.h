@@ -1,10 +1,5 @@
 #include <FastLED.h>
 
-#define GHOST_PANEL_WIDTH         14
-#define GHOST_PANEL_HEIGHT        14
-#define GHOST_VIRTUAL_NUM_LEDS    GHOST_PANEL_WIDTH * GHOST_PANEL_HEIGHT    //  The number of Virtual LEDs when X,Y positions are translated
-#define GHOST_NUM_LEDS            158    //  The number of LEDs we want to control
-
 class GhostScreen {
   public:
     void Initialize(bool ledChutesLayout) {
@@ -13,7 +8,7 @@ class GhostScreen {
       TranslateScreenVirtualIndices();
     }
 
-    inline void SetScreen(CRGB color) { fill_solid(LEDs, GHOST_NUM_LEDS, color); }
+    inline void SetScreen(CRGB color) { fill_solid(LEDs, LED_COUNT, color); }
     inline void ClearScreen() { SetScreen(CRGB::Black); }
     
 
@@ -26,11 +21,19 @@ class GhostScreen {
     inline void SetLEDIndexByColor(int index, CRGB color) { if (IsIndexOnScreen(index) == true) LEDs[index] = color; }
     inline void SetLightsByColorIndex(int x, int y, int count, byte colorIndex) { CRGB color = CRGB(GetColor(colorIndex, 0), GetColor(colorIndex, 1), GetColor(colorIndex, 2)); for (int i = 0; i < count; ++i) SetLEDByColorRef(x + i, y, color); }
 
-    CRGB LEDs[GHOST_NUM_LEDS];
+    const int BUTTON_DELAY = 400;
+    int ButtonIterationTimer = 0;
+
+    static const int LED_COUNT = 158;
+    static const int SCREEN_WIDTH = 14;
+    static const int SCREEN_HEIGHT = 14;
+    CRGB LEDs[LED_COUNT];
 
     void ResetTetris(int x, int y, byte colorIndex);
 
   private:
+    static const int VIRTUAL_LED_COUNT = SCREEN_WIDTH * SCREEN_HEIGHT; //  The number of Virtual LEDs when X,Y positions are translated
+
     bool Chutes = false;
 
     //  Convert the 158-light ghost screen shape into a string
@@ -49,12 +52,12 @@ class GhostScreen {
     //  "OO_OOO__OOO_OO" + 
     //  "O___OO__OO___O";
     String ScreenShape = "_____OOOO________OOOOOOOO_____OOOOOOOOOO___OOOOOOOOOOOO__OOOOOOOOOOOO__OOOOOOOOOOOO_OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO_OOO__OOO_OOO___OO__OO___O";
-    int ScreenIndexTranslated[GHOST_VIRTUAL_NUM_LEDS];
+    int ScreenIndexTranslated[VIRTUAL_LED_COUNT];
 
     //  Call this when the screen class is created
     void TranslateScreenVirtualIndices() {
       int emptySpaceCount = 0;
-      for (int i = 0; i < GHOST_VIRTUAL_NUM_LEDS; ++i) {
+      for (int i = 0; i < VIRTUAL_LED_COUNT; ++i) {
         if (ScreenShape[i] == 'O') {
           ScreenIndexTranslated[VirtualIndexTranslate(i)] = i - emptySpaceCount;
         }
@@ -68,22 +71,22 @@ class GhostScreen {
     inline bool IsPosOnScreen(int x, int y) {
       if (x < 0) return false;
       if (y < 0) return false;
-      if (x >= GHOST_PANEL_WIDTH) return false;
-      if (y >= GHOST_PANEL_HEIGHT) return false;
+      if (x >= SCREEN_WIDTH) return false;
+      if (y >= SCREEN_HEIGHT) return false;
       return (PositionToIndex(x, y) != -1);
     }
 
-    inline int PositionToIndex(int x, int y) { int vIndex = (y * GHOST_PANEL_WIDTH + x); return (vIndex >= 0 && vIndex <= GHOST_VIRTUAL_NUM_LEDS) ? ScreenIndexTranslated[(y * GHOST_PANEL_WIDTH + x)] : -1; }
-    inline bool IsIndexOnScreen(int index) { return (index >= 0 && index < GHOST_NUM_LEDS); }
-    inline bool IsVirtualIndexOnScreen(int vIndex) { return (vIndex >= 0 && vIndex < GHOST_VIRTUAL_NUM_LEDS) ? (ScreenIndexTranslated[vIndex] != -1) : false; }
+    inline int PositionToIndex(int x, int y) { int vIndex = (y * SCREEN_WIDTH + x); return (vIndex >= 0 && vIndex <= VIRTUAL_LED_COUNT) ? ScreenIndexTranslated[(y * SCREEN_WIDTH + x)] : -1; }
+    inline bool IsIndexOnScreen(int index) { return (index >= 0 && index < LED_COUNT); }
+    inline bool IsVirtualIndexOnScreen(int vIndex) { return (vIndex >= 0 && vIndex < VIRTUAL_LED_COUNT) ? (ScreenIndexTranslated[vIndex] != -1) : false; }
 
     //  NOTE: The "Chutes" alternate is for when the LED screen goes left to right on odd rows, but right to left on even rows (like a chute going back and forth)
-    inline int VirtualIndexTranslate(int virtualIndex) { return Chutes ? (((virtualIndex / GHOST_PANEL_WIDTH) & 1) ? (((virtualIndex / GHOST_PANEL_WIDTH + 1) * GHOST_PANEL_WIDTH) - 1 - (virtualIndex % GHOST_PANEL_WIDTH)) : virtualIndex) : virtualIndex; }
+    inline int VirtualIndexTranslate(int virtualIndex) { return Chutes ? (((virtualIndex / SCREEN_WIDTH) & 1) ? (((virtualIndex / SCREEN_WIDTH + 1) * SCREEN_WIDTH) - 1 - (virtualIndex % SCREEN_WIDTH)) : virtualIndex) : virtualIndex; }
 };
 
-void GhostScreen::ResetTetris(int x = (GHOST_PANEL_WIDTH / 2), int y = (GHOST_PANEL_HEIGHT / 2), byte colorIndex = 54)
+void GhostScreen::ResetTetris(int x = (SCREEN_WIDTH / 2), int y = (SCREEN_HEIGHT / 2), byte colorIndex = 54)
 {
-  ClearStrip(LEDs, GHOST_NUM_LEDS);
+  ClearStrip(LEDs, LED_COUNT);
   SetLightsByColorIndex(x - 7, y - 7, 14, colorIndex); // START ROW -7
   SetLightsByColorIndex(x - 7, y - 6, 14, colorIndex); // START ROW -6
   SetLightsByColorIndex(x - 7, y - 5, 2, colorIndex); // START ROW -5
