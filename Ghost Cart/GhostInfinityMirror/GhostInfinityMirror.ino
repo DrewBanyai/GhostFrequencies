@@ -23,10 +23,6 @@
 
 #define GHOST_CART_HARDWARE     false
 
-//  "Iterate" button, which when pressed will iterate to the next pattern
-unsigned long iterateButtonTimer = 0;
-byte patternIndex = 0;
-
 NES_Controller nesController(NES_DATA_PIN, NES_CLOCK_PIN, NES_LATCH_PIN);
 GhostScreen ghostScreen;
 OuterRing outerRing;
@@ -35,117 +31,6 @@ void SerialProgramInit() {
   Serial.begin(9600);
   while (!Serial) { ; }
   Serial.println("Program START!");
-}
-
-void ResetTetris(int x = 14, int y = 13, byte outerBG = 54, byte innerBG = 0)
-{
-  ghostScreen.SetLightsByColorIndex(x - 14, y - 13, 28, outerBG); // START ROW -13
-  ghostScreen.SetLightsByColorIndex(x - 14, y - 12, 28, outerBG); // START ROW -12
-  ghostScreen.SetLightsByColorIndex(x - 14, y - 11, 28, outerBG); // START ROW -11
-  ghostScreen.SetLightsByColorIndex(x - 14, y - 10, 28, outerBG); // START ROW -10
-  ghostScreen.SetLightsByColorIndex(x - 14, y - 9, 9, outerBG); // START ROW -9
-  ghostScreen.SetLightsByColorIndex(x - 5, y - 9, 10, innerBG);
-  ghostScreen.SetLEDByColorIndex(x + 5, y - 9, outerBG);
-  ghostScreen.SetLightsByColorIndex(x + 6, y - 9, 6, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 12, y - 9, 2, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y - 8, 9, outerBG); // START ROW -8
-  ghostScreen.SetLightsByColorIndex(x - 5, y - 8, 10, innerBG);
-  ghostScreen.SetLEDByColorIndex(x + 5, y - 8, outerBG);
-  ghostScreen.SetLightsByColorIndex(x + 6, y - 8, 6, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 12, y - 8, 2, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y - 7, 9, outerBG); // START ROW -7
-  ghostScreen.SetLightsByColorIndex(x - 5, y - 7, 10, innerBG);
-  ghostScreen.SetLEDByColorIndex(x + 5, y - 7, outerBG);
-  ghostScreen.SetLightsByColorIndex(x + 6, y - 7, 6, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 12, y - 7, 2, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y - 6, 9, outerBG); // START ROW -6
-  ghostScreen.SetLightsByColorIndex(x - 5, y - 6, 10, innerBG);
-  ghostScreen.SetLEDByColorIndex(x + 5, y - 6, outerBG);
-  ghostScreen.SetLightsByColorIndex(x + 6, y - 6, 6, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 12, y - 6, 2, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y - 5, 9, outerBG); // START ROW -5
-  ghostScreen.SetLightsByColorIndex(x - 5, y - 5, 10, innerBG);
-  ghostScreen.SetLEDByColorIndex(x + 5, y - 5, outerBG);
-  ghostScreen.SetLightsByColorIndex(x + 6, y - 5, 6, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 12, y - 5, 2, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y - 4, 9, outerBG); // START ROW -4
-  ghostScreen.SetLightsByColorIndex(x - 5, y - 4, 10, innerBG);
-  ghostScreen.SetLEDByColorIndex(x + 5, y - 4, outerBG);
-  ghostScreen.SetLightsByColorIndex(x + 6, y - 4, 6, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 12, y - 4, 2, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y - 3, 9, outerBG); // START ROW -3
-  ghostScreen.SetLightsByColorIndex(x - 5, y - 3, 10, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 5, y - 3, 9, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y - 2, 9, outerBG); // START ROW -2
-  ghostScreen.SetLightsByColorIndex(x - 5, y - 2, 10, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 5, y - 2, 9, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y - 1, 9, outerBG); // START ROW -1
-  ghostScreen.SetLightsByColorIndex(x - 5, y - 1, 10, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 5, y - 1, 9, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y + 0, 9, outerBG); // START ROW +0
-  ghostScreen.SetLightsByColorIndex(x - 5, y + 0, 10, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 5, y + 0, 9, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y + 1, 9, outerBG); // START ROW +1
-  ghostScreen.SetLightsByColorIndex(x - 5, y + 1, 10, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 5, y + 1, 9, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y + 2, 9, outerBG); // START ROW +2
-  ghostScreen.SetLightsByColorIndex(x - 5, y + 2, 10, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 5, y + 2, 9, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y + 3, 9, outerBG); // START ROW +3
-  ghostScreen.SetLightsByColorIndex(x - 5, y + 3, 10, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 5, y + 3, 9, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y + 4, 9, outerBG); // START ROW +4
-  ghostScreen.SetLightsByColorIndex(x - 5, y + 4, 10, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 5, y + 4, 9, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y + 5, 9, outerBG); // START ROW +5
-  ghostScreen.SetLightsByColorIndex(x - 5, y + 5, 10, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 5, y + 5, 9, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y + 6, 9, outerBG); // START ROW +6
-  ghostScreen.SetLightsByColorIndex(x - 5, y + 6, 10, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 5, y + 6, 9, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y + 7, 9, outerBG); // START ROW +7
-  ghostScreen.SetLightsByColorIndex(x - 5, y + 7, 10, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 5, y + 7, 9, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y + 8, 9, outerBG); // START ROW +8
-  ghostScreen.SetLightsByColorIndex(x - 5, y + 8, 10, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 5, y + 8, 9, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y + 9, 9, outerBG); // START ROW +9
-  ghostScreen.SetLightsByColorIndex(x - 5, y + 9, 10, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 5, y + 9, 9, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y + 10, 9, outerBG); // START ROW +10
-  ghostScreen.SetLightsByColorIndex(x - 5, y + 10, 10, innerBG);
-  ghostScreen.SetLightsByColorIndex(x + 5, y + 10, 9, outerBG);
-  ghostScreen.SetLightsByColorIndex(x - 14, y + 11, 28, outerBG); // START ROW +11
-  ghostScreen.SetLightsByColorIndex(x - 14, y + 12, 28, outerBG); // START ROW +12
-  ghostScreen.SetLightsByColorIndex(x - 14, y + 13, 28, outerBG); // START ROW +13
-  ghostScreen.SetLightsByColorIndex(x - 14, y + 14, 28, outerBG); // START ROW +14
-}
-
-void RainbowFlow2(int hueChangeSpeed = 1, bool berzerk = false)
-{
-  static int delayTime = 125;
-  
-  if (IsNextFrameReady())
-  {
-    static int rainbowPosition = 0;
-    for (int i = 0; i < ghostScreen.SCREEN_WIDTH * 2; ++i)
-    {
-      CRGB color = Wheel(((i * 1024 / ghostScreen.LED_COUNT) + rainbowPosition) & 255);
-      for (int j = 0; j < ghostScreen.SCREEN_HEIGHT; ++j)
-      {
-        if (j < 0 || j >= ghostScreen.SCREEN_WIDTH) continue;
-        if ((i - j) < 0 || (i - j) >= ghostScreen.SCREEN_WIDTH) continue;
-
-        ghostScreen.SetLEDByColorRef(i - j, j, color);
-        if (berzerk) rainbowPosition += hueChangeSpeed;
-      }
-    }
-    
-    if (!berzerk) rainbowPosition += hueChangeSpeed;
-    FastLED.show();
-    
-    nextFrameMillis += delayTime;
-  }
 }
 
 void DrawLetter_A(int x, int y, byte color)
@@ -290,105 +175,6 @@ void DrawLetter_R(int x, int y, byte color)
   ghostScreen.SetLightsByColorIndex(x + 4, y + 6, 4, color);
 }
 
-void DrawPacManChomp01(int x, int y, byte color)
-{
-/*
- *     XXXXX
- *   XXXXXXXXX
- *  XXXXXXXXXXX
- *  XXXXXXXXXXX
- * XXXXXXXXXXXXX
- * XXXXXXXXXXXXX
- * XXXXXXXXXXXXX
- * XXXXXXXXXXXXX
- * XXXXXXXXXXXXX
- *  XXXXXXXXXXX
- *  XXXXXXXXXXX
- *   XXXXXXXXX
- *     XXXXX
- */
- 
-  ghostScreen.SetLightsByColorIndex(x - 2, y - 6, 5, color); //  START ROW -6
-  ghostScreen.SetLightsByColorIndex(x - 4, y - 5, 9, color); //  START ROW -5
-  ghostScreen.SetLightsByColorIndex(x - 5, y - 4, 11, color); //  START ROW -4
-  ghostScreen.SetLightsByColorIndex(x - 5, y - 3, 11, color); //  START ROW -3
-  ghostScreen.SetLightsByColorIndex(x - 6, y - 2, 13, color); //  START ROW -2
-  ghostScreen.SetLightsByColorIndex(x - 6, y - 1, 13, color); //  START ROW -1
-  ghostScreen.SetLightsByColorIndex(x - 6, y + 0, 13, color); //  START ROW +0
-  ghostScreen.SetLightsByColorIndex(x - 6, y + 1, 13, color); //  START ROW +1
-  ghostScreen.SetLightsByColorIndex(x - 6, y + 2, 13, color); //  START ROW +2
-  ghostScreen.SetLightsByColorIndex(x - 5, y + 3, 11, color); //  START ROW +3
-  ghostScreen.SetLightsByColorIndex(x - 5, y + 4, 11, color); //  START ROW +4
-  ghostScreen.SetLightsByColorIndex(x - 4, y + 5, 9, color); //  START ROW +5
-  ghostScreen.SetLightsByColorIndex(x - 2, y + 6, 5, color); //  START ROW +6
-}
-
-void DrawPacManChomp02(int x, int y, byte color)
-{
-/*
- *     XXXXX
- *   XXXXXXXXX
- *  XXXXXXXXXXX
- *  XXXXXXXXXXX
- * XXXXXXXXXX
- * XXXXXXX
- * XXXX
- * XXXXXXX
- * XXXXXXXXXX
- *  XXXXXXXXXXX
- *  XXXXXXXXXXX
- *   XXXXXXXXX
- *     XXXXX
- */
- 
-  ghostScreen.SetLightsByColorIndex(x - 2, y - 6, 5, color); //  START ROW -6
-  ghostScreen.SetLightsByColorIndex(x - 4, y - 5, 9, color); //  START ROW -5
-  ghostScreen.SetLightsByColorIndex(x - 5, y - 4, 11, color); //  START ROW -4
-  ghostScreen.SetLightsByColorIndex(x - 5, y - 3, 11, color); //  START ROW -3
-  ghostScreen.SetLightsByColorIndex(x - 6, y - 2, 10, color); //  START ROW -2
-  ghostScreen.SetLightsByColorIndex(x - 6, y - 1, 7, color); //  START ROW -1
-  ghostScreen.SetLightsByColorIndex(x - 6, y + 0, 4, color); //  START ROW +0
-  ghostScreen.SetLightsByColorIndex(x - 6, y + 1, 7, color); //  START ROW +1
-  ghostScreen.SetLightsByColorIndex(x - 6, y + 2, 10, color); //  START ROW +2
-  ghostScreen.SetLightsByColorIndex(x - 5, y + 3, 11, color); //  START ROW +3
-  ghostScreen.SetLightsByColorIndex(x - 5, y + 4, 11, color); //  START ROW +4
-  ghostScreen.SetLightsByColorIndex(x - 4, y + 5, 9, color); //  START ROW +5
-  ghostScreen.SetLightsByColorIndex(x - 2, y + 6, 5, color); //  START ROW +6
-}
-
-void DrawPacManChomp03(int x, int y, byte color)
-{
-/*
- *     XXXXX
- *   XXXXXXX
- *  XXXXXXX
- *  XXXXXX
- * XXXXXX
- * XXXXX
- * XXXX
- * XXXXX
- * XXXXXX
- *  XXXXXX
- *  XXXXXXX
- *   XXXXXXX
- *     XXXXX
- */
- 
-  ghostScreen.SetLightsByColorIndex(x - 2, y - 6, 5, color); //  START ROW -6
-  ghostScreen.SetLightsByColorIndex(x - 4, y - 5, 7, color); //  START ROW -5
-  ghostScreen.SetLightsByColorIndex(x - 5, y - 4, 7, color); //  START ROW -4
-  ghostScreen.SetLightsByColorIndex(x - 5, y - 3, 6, color); //  START ROW -3
-  ghostScreen.SetLightsByColorIndex(x - 6, y - 2, 6, color); //  START ROW -2
-  ghostScreen.SetLightsByColorIndex(x - 6, y - 1, 5, color); //  START ROW -1
-  ghostScreen.SetLightsByColorIndex(x - 6, y + 0, 4, color); //  START ROW +0
-  ghostScreen.SetLightsByColorIndex(x - 6, y + 1, 5, color); //  START ROW +1
-  ghostScreen.SetLightsByColorIndex(x - 6, y + 2, 6, color); //  START ROW +2
-  ghostScreen.SetLightsByColorIndex(x - 5, y + 3, 6, color); //  START ROW +3
-  ghostScreen.SetLightsByColorIndex(x - 5, y + 4, 7, color); //  START ROW +4
-  ghostScreen.SetLightsByColorIndex(x - 4, y + 5, 7, color); //  START ROW +5
-  ghostScreen.SetLightsByColorIndex(x - 2, y + 6, 5, color); //  START ROW +6
-}
-
 void LetterMoveThrough_BRC(int x = 21, int y = 6, int frameLength = 60, int animationFrameCount = 90)
 {
   int frame = GetFrame(animationFrameCount, frameLength);
@@ -396,20 +182,6 @@ void LetterMoveThrough_BRC(int x = 21, int y = 6, int frameLength = 60, int anim
   DrawLetter_B(x - frame, y, 4);
   DrawLetter_R(x + 16 - frame, y, 4);
   DrawLetter_C(x + 32 - frame, y, 4);
-}
-
-void PacManChompDanceThrough(int x = -6, int y = 7, int frameLength = 100, int animationFrameCount = 46, int frame = 255)
-{
-  if (frame == 255) frame = GetFrame(animationFrameCount, frameLength);
-  
-  if (frame % 8 == 0)       DrawPacManChomp01(frame + x, y, 4);
-  else if (frame % 8 == 1)  DrawPacManChomp02(frame + x, y, 4);
-  else if (frame % 8 == 2)  DrawPacManChomp03(frame + x, y, 4);
-  else if (frame % 8 == 3)  DrawPacManChomp02(frame + x, y, 4);
-  else if (frame % 8 == 4)  DrawPacManChomp01(frame + x, y, 4);
-  else if (frame % 8 == 5)  DrawPacManChomp02(frame + x, y, 4);
-  else if (frame % 8 == 6)  DrawPacManChomp03(frame + x, y, 4);
-  else                      DrawPacManChomp02(frame + x, y, 4);
 }
 
 void DrawMsPacManChomp01(int x, int y, byte color1, byte color2, byte color3)
@@ -578,117 +350,6 @@ void MsPacManChompDanceThrough(int frameLength = 100, int animationFrameCount = 
   else                      DrawMsPacManChomp02(ghostScreen.SCREEN_WIDTH - frame + 6, 7, 4, 1, 3);
 }
 
-void DrawPacManGhostWalk01(int x, int y, byte bodyColor = 50, byte eyeWhite = 7, byte eyeBall = 0)
-{
-  ghostScreen.SetLightsByColorIndex(x - 2, y - 7, 4, bodyColor); // START ROW -7
-  ghostScreen.SetLightsByColorIndex(x - 4, y - 6, 8, bodyColor); // START ROW -6
-  ghostScreen.SetLightsByColorIndex(x - 5, y - 5, 10, bodyColor); // START ROW -5
-  ghostScreen.SetLightsByColorIndex(x - 6, y - 4, 3, bodyColor); // START ROW -4
-  ghostScreen.SetLightsByColorIndex(x - 3, y - 4, 2, eyeWhite);
-  ghostScreen.SetLightsByColorIndex(x - 1, y - 4, 4, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x + 3, y - 4, 2, eyeWhite);
-  ghostScreen.SetLEDByColorIndex(x + 5, y - 4, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x - 6, y - 3, 2, bodyColor); // START ROW -3
-  ghostScreen.SetLightsByColorIndex(x - 4, y - 3, 4, eyeWhite);
-  ghostScreen.SetLightsByColorIndex(x + 0, y - 3, 2, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x + 2, y - 3, 4, eyeWhite);
-  ghostScreen.SetLightsByColorIndex(x - 6, y - 2, 2, bodyColor); // START ROW -2
-  ghostScreen.SetLightsByColorIndex(x - 4, y - 2, 2, eyeWhite);
-  ghostScreen.SetLightsByColorIndex(x - 2, y - 2, 2, eyeBall);
-  ghostScreen.SetLightsByColorIndex(x + 0, y - 2, 2, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x + 2, y - 2, 2, eyeWhite);
-  ghostScreen.SetLightsByColorIndex(x + 4, y - 2, 2, eyeBall);
-  ghostScreen.SetLightsByColorIndex(x - 7, y - 1, 3, bodyColor); // START ROW -1
-  ghostScreen.SetLightsByColorIndex(x - 4, y - 1, 2, eyeWhite);
-  ghostScreen.SetLightsByColorIndex(x - 2, y - 1, 2, eyeBall);
-  ghostScreen.SetLightsByColorIndex(x + 0, y - 1, 2, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x + 2, y - 1, 2, eyeWhite);
-  ghostScreen.SetLightsByColorIndex(x + 4, y - 1, 2, eyeBall);
-  ghostScreen.SetLEDByColorIndex(x + 6, y - 1, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x - 7, y + 0, 4, bodyColor); // START ROW +0
-  ghostScreen.SetLightsByColorIndex(x - 3, y + 0, 2, eyeWhite);
-  ghostScreen.SetLightsByColorIndex(x - 1, y + 0, 4, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x + 3, y + 0, 2, eyeWhite);
-  ghostScreen.SetLightsByColorIndex(x + 5, y + 0, 2, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x - 7, y + 1, 14, bodyColor); // START ROW +1
-  ghostScreen.SetLightsByColorIndex(x - 7, y + 2, 14, bodyColor); // START ROW +2
-  ghostScreen.SetLightsByColorIndex(x - 7, y + 3, 14, bodyColor); // START ROW +3
-  ghostScreen.SetLightsByColorIndex(x - 7, y + 4, 14, bodyColor); // START ROW +4
-  ghostScreen.SetLightsByColorIndex(x - 7, y + 5, 4, bodyColor); // START ROW +5
-  ghostScreen.SetLightsByColorIndex(x - 2, y + 5, 4, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x + 3, y + 5, 4, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x - 6, y + 6, 2, bodyColor); // START ROW +6
-  ghostScreen.SetLightsByColorIndex(x - 1, y + 6, 2, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x + 4, y + 6, 2, bodyColor);
-}
-
-void DrawPacManGhostWalk02(int x, int y, byte bodyColor = 50, byte eyeWhite = 7, byte eyeBall = 0)
-{
-  ghostScreen.SetLightsByColorIndex(x - 2, y - 7, 4, bodyColor); // START ROW -7
-  ghostScreen.SetLightsByColorIndex(x - 4, y - 6, 8, bodyColor); // START ROW -6
-  ghostScreen.SetLightsByColorIndex(x - 5, y - 5, 10, bodyColor); // START ROW -5
-  ghostScreen.SetLightsByColorIndex(x - 6, y - 4, 3, bodyColor); // START ROW -4
-  ghostScreen.SetLightsByColorIndex(x - 3, y - 4, 2, eyeWhite);
-  ghostScreen.SetLightsByColorIndex(x - 1, y - 4, 4, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x + 3, y - 4, 2, eyeWhite);
-  ghostScreen.SetLEDByColorIndex(x + 5, y - 4, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x - 6, y - 3, 2, bodyColor); // START ROW -3
-  ghostScreen.SetLightsByColorIndex(x - 4, y - 3, 4, eyeWhite);
-  ghostScreen.SetLightsByColorIndex(x + 0, y - 3, 2, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x + 2, y - 3, 4, eyeWhite);
-  ghostScreen.SetLightsByColorIndex(x - 6, y - 2, 2, bodyColor); // START ROW -2
-  ghostScreen.SetLightsByColorIndex(x - 4, y - 2, 2, eyeWhite);
-  ghostScreen.SetLightsByColorIndex(x - 2, y - 2, 2, eyeBall);
-  ghostScreen.SetLightsByColorIndex(x + 0, y - 2, 2, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x + 2, y - 2, 2, eyeWhite);
-  ghostScreen.SetLightsByColorIndex(x + 4, y - 2, 2, eyeBall);
-  ghostScreen.SetLightsByColorIndex(x - 7, y - 1, 3, bodyColor); // START ROW -1
-  ghostScreen.SetLightsByColorIndex(x - 4, y - 1, 2, eyeWhite);
-  ghostScreen.SetLightsByColorIndex(x - 2, y - 1, 2, eyeBall);
-  ghostScreen.SetLightsByColorIndex(x + 0, y - 1, 2, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x + 2, y - 1, 2, eyeWhite);
-  ghostScreen.SetLightsByColorIndex(x + 4, y - 1, 2, eyeBall);
-  ghostScreen.SetLEDByColorIndex(x + 6, y - 1, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x - 7, y + 0, 4, bodyColor); // START ROW +0
-  ghostScreen.SetLightsByColorIndex(x - 3, y + 0, 2, eyeWhite);
-  ghostScreen.SetLightsByColorIndex(x - 1, y + 0, 4, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x + 3, y + 0, 2, eyeWhite);
-  ghostScreen.SetLightsByColorIndex(x + 5, y + 0, 2, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x - 7, y + 1, 14, bodyColor); // START ROW +1
-  ghostScreen.SetLightsByColorIndex(x - 7, y + 2, 14, bodyColor); // START ROW +2
-  ghostScreen.SetLightsByColorIndex(x - 7, y + 3, 14, bodyColor); // START ROW +3
-  ghostScreen.SetLightsByColorIndex(x - 7, y + 4, 14, bodyColor); // START ROW +4
-  ghostScreen.SetLightsByColorIndex(x - 7, y + 5, 2, bodyColor); // START ROW +5
-  ghostScreen.SetLightsByColorIndex(x - 4, y + 5, 3, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x + 1, y + 5, 3, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x + 5, y + 5, 2, bodyColor);
-  ghostScreen.SetLEDByColorIndex(x - 7, y + 6, bodyColor); // START ROW +6
-  ghostScreen.SetLightsByColorIndex(x - 3, y + 6, 2, bodyColor);
-  ghostScreen.SetLightsByColorIndex(x + 1, y + 6, 2, bodyColor);
-  ghostScreen.SetLEDByColorIndex(x + 6, y + 6, bodyColor);
-}
-
-void PacManGhostDanceThrough(int x = 6, int y = 14, int frameLength = 48, int body = 50, int eyeWhite = 7, int eyeBall = 0, int animationTime = 100, int frame = 255)
-{
-  if (frame == 255) frame = GetFrame(frameLength, animationTime);
-  
-  if (frame % 4 == 0)       DrawPacManGhostWalk01(frame + x, y, body, eyeWhite, eyeBall);
-  else if (frame % 4 == 1)  DrawPacManGhostWalk01(frame + x, y, body, eyeWhite, eyeBall);
-  else if (frame % 4 == 2)  DrawPacManGhostWalk02(frame + x, y, body, eyeWhite, eyeBall);
-  else if (frame % 4 == 3)  DrawPacManGhostWalk02(frame + x, y, body, eyeWhite, eyeBall);
-}
-
-void PacManChompDanceThroughPlusGhost(int frameLength = 100, int animationFrameCount = 140)
-{
-  int frame = GetFrame(animationFrameCount, frameLength);
-
-  PacManChompDanceThrough(-6, 7, frameLength, animationFrameCount, frame);
-  PacManGhostDanceThrough(-26, 7, frameLength, 50, 7, 0, animationFrameCount, frame);
-  PacManGhostDanceThrough(-46, 7, frameLength, 51, 7, 0, animationFrameCount, frame);
-  PacManGhostDanceThrough(-66, 7, frameLength, 52, 7, 0, animationFrameCount, frame);
-  PacManGhostDanceThrough(-86, 7, frameLength, 53, 7, 0, animationFrameCount, frame);
-}
-
 void DrawSpaceInvader01(int x, int y, byte color1 = 7, byte color2 = 7)
 {
 /*
@@ -755,7 +416,7 @@ void DrawSpaceInvader02(int x, int y, byte color1 = 7, byte color2 = 7)
 
 void SpaceInvaderDanceThrough(byte color1 = 7, byte color2 = 7)
 {
-  int frame = GetFrame(40);
+  int frame = GetFrame(40, 333);
   
   if (frame & 1)  DrawSpaceInvader01(frame - 6, 7, color1, color2);
   else            DrawSpaceInvader02(frame - 6, 7, color1, color2);
@@ -3307,7 +2968,7 @@ void ShowTetrisFailureAnimation()
   FastLED.show();
   delay(1000);
   UpdateMillisOffset();
-  ResetTetris();
+  ghostScreen.ResetTetris();
 }
 
 void Tetris()
@@ -3395,17 +3056,6 @@ void Tetris()
   }
 }
 
-inline void IteratePatternIndex(byte overrideIndex = 255)
-{
-    ghostScreen.ClearScreen();
-
-    if (overrideIndex != 255) patternIndex = overrideIndex;
-    else ++patternIndex;
-
-    UpdateMillisOffset();
-    if (patternIndex == 0) ResetTetris();
-}
-
 void setup()
 {
   //  Setup the LED strips up for both inner ghost and outer ring
@@ -3421,50 +3071,47 @@ void setup()
   //  Set all LED brightness and clear all strips
   FastLED.setBrightness(BRIGHTNESS);
   ghostScreen.ClearScreen();
-  ClearStrip(outerRing.LEDs, outerRing.LED_COUNT);
+  outerRing.ClearScreen();
   FastLED.show();
   
   //  Seed the random number generator
   randomSeed(analogRead(0));
-  
-  //  Set the "Iterate" button timer to the current time
-  ghostScreen.ButtonIterationTimer = millis();
-  IteratePatternIndex(0);
 
   SerialProgramInit();
 
   ghostScreen.Initialize(true);
 }
 
+void PrintPatternName(String str) { /*Serial.println(str);*/ }
+
 void loop()
 {
-  nesController.ReadController();
-  
   //  Determine if the current time is past the button delay timer
-  unsigned long currentMillis = millis();
-  if ((currentMillis > ghostScreen.ButtonIterationTimer) && (nesController.CheckButton(NES_A_BUTTON))) {
-    Serial.println("NES Controller [A] Button pressed, iterating to next pattern on Ghost Screen...");
-    ghostScreen.ButtonIterationTimer = currentMillis + ghostScreen.BUTTON_DELAY;
-    IteratePatternIndex();
-  }
+  outerRing.SwitchPatterns();
+  ghostScreen.SwitchPatterns();
 
-  switch (patternIndex)
+  //nesController.ReadController();
+  //if (nesController.CheckButton(NES_A_BUTTON)) outerRing.SwitchPatterns();
+  //if (nesController.CheckButton(NES_B_BUTTON)) ghostScreen.SwitchPatterns();
+
+  switch (ghostScreen.PatternIndex)
   {
-    case 0:   Serial.println("RainbowFlow1()");                       RainbowFlow1(ghostScreen.LEDs, ghostScreen.LED_COUNT);                      break;
-    case 1:   Serial.println("RainbowFlow2()");                       RainbowFlow2(10, false);                                                    break;
-    case 2:   Serial.println("ColorFire()");                          ColorFire(ghostScreen.LEDs, ghostScreen.LED_COUNT);                         break;
-    case 3:   Serial.println("GlowFlow()");                           GlowFlow(ghostScreen.LEDs, ghostScreen.LED_COUNT, 10, 100);                 break;
-    case 4:   Serial.println("PacManChompDanceThrough()");            ghostScreen.ClearScreen(); PacManChompDanceThrough();                       break;
-    case 5:   Serial.println("PacManChompDanceThroughPlusGhost()");   ghostScreen.ClearScreen(); PacManChompDanceThroughPlusGhost();              break;
-    case 6:   Serial.println("MsPacManChompDanceThrough()");          ghostScreen.ClearScreen(); MsPacManChompDanceThrough();                     break;
-    case 7:   Serial.println("SpaceInvaderDanceThrough()");           ghostScreen.ClearScreen(); SpaceInvaderDanceThrough();                      break;
-    case 8:   Serial.println("MegaManRunThrough()");                  ghostScreen.ClearScreen(); MegaManRunThrough();                             break;
-    case 9:   Serial.println("MarioWarpThrough()");                   ghostScreen.ClearScreen(); MarioWarpThrough();                              break;
-    case 10:  Serial.println("LetterMoveThrough_BRC()");              ghostScreen.ClearScreen(); LetterMoveThrough_BRC();                         break;
-    //case 11:  /*Serial.println("Tetris()");*/                         ghostScreen.ClearScreen(); Tetris();                                        break;
-    default:  patternIndex = 0;                                       break;
+    case 0:   PrintPatternName("RainbowFlow1()");                       RainbowFlow1(ghostScreen.LEDs, ghostScreen.LED_COUNT, ghostScreen.FrameAnimation.IterateFrame(65535, 5));                      break;
+    case 1:   PrintPatternName("RainbowFlow2()");                       ghostScreen.RainbowFlow2(10, false, ghostScreen.FrameAnimation.IterateFrame(65535, 10));                                        break;
+    case 2:   PrintPatternName("ColorFire()");                          ColorFire(ghostScreen.LEDs, ghostScreen.LED_COUNT, ghostScreen.FrameAnimation.IterateFrame(65535, 25));                         break;
+    case 3:   PrintPatternName("GlowFlow()");                           GlowFlow(ghostScreen.LEDs, ghostScreen.LED_COUNT, 10, 100);                 break;
+    case 4:   PrintPatternName("PacManChompDanceThrough()");            ghostScreen.ClearScreen(); ghostScreen.PacManChompDanceThrough();                       break;
+    case 5:   PrintPatternName("PacManChompDanceThroughPlusGhost()");   ghostScreen.ClearScreen(); ghostScreen.PacManChompDanceThroughPlusGhost();              break;
+    case 6:   PrintPatternName("MsPacManChompDanceThrough()");          ghostScreen.ClearScreen(); MsPacManChompDanceThrough();                     break;
+    case 7:   PrintPatternName("SpaceInvaderDanceThrough()");           ghostScreen.ClearScreen(); SpaceInvaderDanceThrough();                      break;
+    case 8:   PrintPatternName("MegaManRunThrough()");                  ghostScreen.ClearScreen(); MegaManRunThrough();                             break;
+    case 9:   PrintPatternName("MarioWarpThrough()");                   ghostScreen.ClearScreen(); MarioWarpThrough();                              break;
+    case 10:  PrintPatternName("LetterMoveThrough_BRC()");              ghostScreen.ClearScreen(); LetterMoveThrough_BRC();                         break;
+    //case 11:  /*PrintPatternName"Tetris()");*/                       ghostScreen.ClearScreen(); Tetris();                                        break;
+    default:  ghostScreen.PatternIndex = 0;                           break;
   }
-  FastLED.show();
 
-  outerRing.Pacman();
+  outerRing.Render();
+
+  FastLED.show();
 }

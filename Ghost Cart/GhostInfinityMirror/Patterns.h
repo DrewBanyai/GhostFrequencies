@@ -3,12 +3,12 @@
 #include "Helper.h"
 #include "FrameAnimation.h"
 
-void RainbowFlow1(CRGB* leds, const int ledCount)
+void RainbowFlow1(CRGB* leds, const int ledCount, bool nextFrameReady)
 {
   static int delayTime = 5;
   static int hueChange = 5;
 
-  if (IsNextFrameReady())
+  if (nextFrameReady)
   {
     static int hue = 0;
     hue += hueChange;
@@ -18,12 +18,12 @@ void RainbowFlow1(CRGB* leds, const int ledCount)
   }
 }
 
-void Fire(CRGB* leds, const int ledCount, byte R, byte G, byte B)
+void Fire(CRGB* leds, const int ledCount, byte R, byte G, byte B, bool nextFrameReady)
 {
   static int delayTime = 25;
   static int hueChange = 15;
 
-  if (IsNextFrameReady())
+  if (nextFrameReady)
   {
     int r = R;
     int g = G;
@@ -45,8 +45,10 @@ void Fire(CRGB* leds, const int ledCount, byte R, byte G, byte B)
   }
 }
 
-void ColorFire(CRGB* leds, const int ledCount, byte colorChangeSpeed = 5)
+void ColorFire(CRGB* leds, const int ledCount, bool nextFrameReady = false)
 {
+  static int colorChangeSpeed = 5;
+
   static byte R = random(0, 256);
   static byte G = random(0, 256);
   static byte B = random(0, 256);
@@ -55,7 +57,7 @@ void ColorFire(CRGB* leds, const int ledCount, byte colorChangeSpeed = 5)
   G += random(1, (colorChangeSpeed + 1) * 2);
   B += random(1, (colorChangeSpeed + 1) * 3);
 
-  Fire(leds, ledCount, R, G, B);
+  Fire(leds, ledCount, R, G, B, nextFrameReady);
 }
 
 void GlowFlow(CRGB* leds, const int ledCount, const int colorChangeSpeed = 1, const unsigned long changeDelay = 1000)

@@ -1,8 +1,40 @@
-//  INTERNAL Generic Values
-#define FRAME_MILLISECONDS 333
+#pragma once
+
+class FrameAnimationManager {
+  public:
+    inline unsigned int GetCurrentFrameIndex(unsigned int animationFrameCount, unsigned long frameLengthMillis) { return ((GetAnimationMillisSoFar() / frameLengthMillis) % animationFrameCount); }
+    
+    inline bool IterateFrame(unsigned int animationFrameCount, unsigned long frameLengthMillis) {
+      unsigned int currentFrame = GetCurrentFrameIndex(animationFrameCount, frameLengthMillis);
+      if (LastFrameIndex < currentFrame) {
+        LastFrameIndex = currentFrame;
+        return true;
+      }
+      return false;
+    }
+    
+    //  This should be called whenever a new animation begins
+    inline void ResetAnimation() {
+      AnimationStartMillis = millis();
+      LastFrameIndex = 0;
+    }    
+  
+  private:
+    unsigned long AnimationStartMillis = 0;   //  The exact millis() return when the current animation started (used to determine the current frame)
+    unsigned int LastFrameIndex = 0;
+
+    inline unsigned long GetAnimationMillisSoFar() { return millis() - AnimationStartMillis; }
+};
+
+
+
+
+
+
+
+
 
 //  INTERNAL variables
-unsigned long startTime = 0;
 unsigned long millisOffset = 0;
 
 //  INTERNAL methods
@@ -14,5 +46,4 @@ unsigned long nextFrameMillis = 0;
 //  EXTERNAL methods
 inline bool IsNextFrameReady() { return (FrameMillis() >= nextFrameMillis); }
 inline void UpdateMillisOffset() { millisOffset = millis(); nextFrameMillis = 0; }
-inline int GetFrame(int animationLength) { return (((FrameMillis() - startTime) / FRAME_MILLISECONDS) % animationLength); }
-inline int GetFrame(int animationLength, int frameMillis) { return (((FrameMillis() - startTime) / frameMillis) % animationLength); }
+inline int GetFrame(int animationLength, int frameMillis) { return ((FrameMillis() / frameMillis) % animationLength); }
