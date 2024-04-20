@@ -1,68 +1,77 @@
 #include <FastLED.h>
 
+#include "LED_Screen.h"
 #include "FrameAnimation.h"
 
-class GhostScreen {
+class GhostScreen : public LED_Screen{
   public:
+    static const unsigned int GHOST_SCREEN_LED_COUNT = 158;
+    static const unsigned int VIRTUAL_LEDS_ADDITION = 0;
+    CRGB GhostScreenLEDs[GHOST_SCREEN_LED_COUNT];
+    GhostScreen() : LED_Screen(GHOST_SCREEN_LED_COUNT, GhostScreenLEDs, "Ghost Screen") {}
+
+
     void Initialize(bool ledChutesLayout) {
       Chutes = ledChutesLayout;
 
       TranslateScreenVirtualIndices();
     }
 
-    FrameAnimationManager FrameAnimation;
-
-    inline void SetScreen(CRGB color) { fill_solid(LEDs, LED_COUNT, color); }
-    inline void ClearScreen() { SetScreen(CRGB::Black); }
-    
-
     inline bool IsPixelBlack(int x, int y) { int index = PositionToIndex(x, y); return (index != -1) ? (LEDs[index].r == 0 && LEDs[index].g == 0 && LEDs[index].b == 0) : false; }
     inline const CRGB& GetPixel(int x, int y) { return (IsPosOnScreen(x, y)) ? LEDs[PositionToIndex(x, y)] : CRGB::Black; }
 
-    inline void SetLEDByColorIndex(int x, int y, byte colorIndex) { if (IsPosOnScreen(x, y) == true) LEDs[PositionToIndex(x, y)] = CRGB(GetColor(colorIndex, 0), GetColor(colorIndex, 1), GetColor(colorIndex, 2)); }
     inline void SetLEDByColorRef(int x, int y, const CRGB& color) { if (IsPosOnScreen(x, y) == true) LEDs[PositionToIndex(x, y)] = color; }
     inline void SetLEDByColor(int x, int y, const CRGB color) { if (IsPosOnScreen(x, y) == true) LEDs[PositionToIndex(x, y)] = color; }
     inline void SetLEDIndexByColor(int index, CRGB color) { if (IsIndexOnScreen(index) == true) LEDs[index] = color; }
-    inline void SetLightsByColorIndex(int x, int y, int count, byte colorIndex) { CRGB color = CRGB(GetColor(colorIndex, 0), GetColor(colorIndex, 1), GetColor(colorIndex, 2)); for (int i = 0; i < count; ++i) SetLEDByColorRef(x + i, y, color); }
+    inline void SetLightsByColorRef(int x, int y, int count, const CRGB& color) { for (int i = 0; i < count; ++i) SetLEDByColorRef(x + i, y, color); }
 
-    void ResetTetris(int x = (SCREEN_WIDTH / 2), int y = (SCREEN_HEIGHT / 2), byte colorIndex = 54);
+    //  14x14 Images
+    void DrawPacManChomp01(int x, int y, CRGB& color);
+    void DrawPacManChomp02(int x, int y, CRGB& color);
+    void DrawPacManChomp03(int x, int y, CRGB& color);
+    void DrawPacManGhostWalk01(int x, int y, CRGB& bodyColor, CRGB& eyeWhite, CRGB& eyeBall);
+    void DrawPacManGhostWalk02(int x, int y, CRGB& bodyColor, CRGB& eyeWhite, CRGB& eyeBall);
+    void DrawMsPacManChomp01(int x, int y, CRGB& color1, CRGB& color2, CRGB& color3);
+    void DrawMsPacManChomp02(int x, int y, CRGB& color1, CRGB& color2, CRGB& color3);
+    void DrawMsPacManChomp03(int x, int y, CRGB& color1, CRGB& color2, CRGB& color3);
+    void DrawSpaceInvader01(int x, int y, CRGB& color1, CRGB& color2);
+    void DrawSpaceInvader02(int x, int y, CRGB& color1, CRGB& color2);
+    void DrawLetter_A(int x, int y, CRGB& color);
+    void DrawLetter_B(int x, int y, CRGB& color);
+    void DrawLetter_C(int x, int y, CRGB& color);
+    void DrawLetter_R(int x, int y, CRGB& color);
 
-    void DrawPacManChomp01(int x, int y, byte color);
-    void DrawPacManChomp02(int x, int y, byte color);
-    void DrawPacManChomp03(int x, int y, byte color);
-    void DrawPacManGhostWalk01(int x, int y, byte bodyColor, byte eyeWhite, byte eyeBall);
-    void DrawPacManGhostWalk02(int x, int y, byte bodyColor, byte eyeWhite, byte eyeBall);
-
-    void PacManChompDanceThrough(int x, int y, int frameLength, int animationFrameCount, int frame);
-    void PacManChompDanceThroughPlusGhost(int frameLength, int animationFrameCount);
+    //  14x14 Image Animations
+    void PacManChompDanceThrough(int x = -6, int y = 7, int frameLengthMillis = 150, int animationFrameCount = 46, int frame = 255);
+    void PacManChompDanceThroughPlusGhost(int frameLength = 100, int animationFrameCount = 140, int frame = 255);
     void PacManGhostDanceThrough(int x, int y, int frameLength, int body, int eyeWhite, int eyeBall, int animationTime, int frame);
+    void MsPacManChompDanceThrough(int frameLength = 100, int animationFrameCount = 48, int frame = 255);
+    void SpaceInvaderDanceThrough(byte color1 = 7, byte color2 = 7, int frame = 255);
+    void LetterMoveThrough_BRC(int x = 21, int y = 6, int frameLengthMillis = 60, int animationFrameCount = 90);
 
-    const int PATTERN_SWITCH_BUTTON_DELAY = 10000;
-    unsigned long PatternSwitchTimer = PATTERN_SWITCH_BUTTON_DELAY;
-    int PatternIndex = 0;
-    inline void SetPatternIndex(int newIndex) { PatternIndex = newIndex; }
-    inline bool SwitchPatterns() {
-      if (millis() < PatternSwitchTimer) return false;
-      else {
-        PatternSwitchTimer = millis() + PATTERN_SWITCH_BUTTON_DELAY;
-        Serial.println("Ghost Screen: Iterating to next pattern...");
-
-        ClearScreen();
-        UpdateMillisOffset();
-        ++PatternIndex;
-        if (PatternIndex == 0) ResetTetris();
-        FrameAnimation.ResetAnimation();
-
-        return true;
+    inline void Render() {
+      switch (PatternIndex)
+      {
+        case 0:   GlowFlow(10, 100);                 break;
+        case 1:   RainbowFlow1(5);   break;
+        case 2:   RainbowFlow2_2D(10, false);       break;
+        case 3:   ColorFire(25);                                                  break;
+        case 4:   ClearScreen(); PacManChompDanceThrough();                       break;
+        case 5:   ClearScreen(); PacManChompDanceThroughPlusGhost();              break;
+        case 6:   ClearScreen(); MsPacManChompDanceThrough();                     break;
+        case 7:   ClearScreen(); SpaceInvaderDanceThrough();                      break;
+        case 8:   ClearScreen(); LetterMoveThrough_BRC();                         break;
+        //case 9:   ClearScreen(); MegaManRunThrough();                             break;
+        //case 10:  ClearScreen(); MarioWarpThrough();                              break;
+        //case 11:  ClearScreen(); Tetris();                                        break;
+        default:    PatternIndex = 0;                                             break;
       }
     }
 
-    static const int LED_COUNT = 158;
     static const int SCREEN_WIDTH = 14;
     static const int SCREEN_HEIGHT = 14;
-    CRGB LEDs[LED_COUNT];
 
-    void RainbowFlow2(int hueChangeSpeed, bool berzerk, bool nextFrameReady);
+    void RainbowFlow2_2D(int hueChangeSpeed, bool berzerk);
 
   private:
     static const int VIRTUAL_LED_COUNT = SCREEN_WIDTH * SCREEN_HEIGHT; //  The number of Virtual LEDs when X,Y positions are translated
@@ -117,51 +126,24 @@ class GhostScreen {
     inline int VirtualIndexTranslate(int virtualIndex) { return Chutes ? (((virtualIndex / SCREEN_WIDTH) & 1) ? (((virtualIndex / SCREEN_WIDTH + 1) * SCREEN_WIDTH) - 1 - (virtualIndex % SCREEN_WIDTH)) : virtualIndex) : virtualIndex; }
 };
 
-void GhostScreen::ResetTetris(int x = (SCREEN_WIDTH / 2), int y = (SCREEN_HEIGHT / 2), byte colorIndex = 54)
-{
-  ClearStrip(LEDs, LED_COUNT);
-  SetLightsByColorIndex(x - 7, y - 7, 14, colorIndex); // START ROW -7
-  SetLightsByColorIndex(x - 7, y - 6, 14, colorIndex); // START ROW -6
-  SetLightsByColorIndex(x - 7, y - 5, 2, colorIndex); // START ROW -5
-  SetLightsByColorIndex(x + 5, y - 5, 2, colorIndex);
-  SetLightsByColorIndex(x - 7, y - 4, 2, colorIndex); // START ROW -4
-  SetLightsByColorIndex(x + 5, y - 4, 2, colorIndex);
-  SetLightsByColorIndex(x - 7, y - 3, 2, colorIndex); // START ROW -3
-  SetLightsByColorIndex(x + 5, y - 3, 2, colorIndex);
-  SetLightsByColorIndex(x - 7, y - 2, 2, colorIndex); // START ROW -2
-  SetLightsByColorIndex(x + 5, y - 2, 2, colorIndex);
-  SetLightsByColorIndex(x - 7, y - 1, 2, colorIndex); // START ROW -1
-  SetLightsByColorIndex(x + 5, y - 1, 2, colorIndex);
-  SetLightsByColorIndex(x - 7, y + 0, 2, colorIndex); // START ROW +0
-  SetLightsByColorIndex(x + 5, y + 0, 2, colorIndex);
-  SetLightsByColorIndex(x - 7, y + 1, 2, colorIndex); // START ROW +1
-  SetLightsByColorIndex(x + 5, y + 1, 2, colorIndex);
-  SetLightsByColorIndex(x - 7, y + 2, 2, colorIndex); // START ROW +2
-  SetLightsByColorIndex(x + 5, y + 2, 2, colorIndex);
-  SetLightsByColorIndex(x - 7, y + 3, 2, colorIndex); // START ROW +3
-  SetLightsByColorIndex(x + 5, y + 3, 2, colorIndex);
-  SetLightsByColorIndex(x - 7, y + 4, 2, colorIndex); // START ROW +4
-  SetLightsByColorIndex(x + 5, y + 4, 2, colorIndex);
-  SetLightsByColorIndex(x - 7, y + 5, 14, colorIndex); // START ROW +5
-  SetLightsByColorIndex(x - 7, y + 6, 14, colorIndex); // START ROW +6
-}
 
-
-void GhostScreen::PacManChompDanceThrough(int x = -6, int y = 7, int frameLengthMillis = 150, int animationFrameCount = 46, int frame = 255)
+void GhostScreen::PacManChompDanceThrough(int x, int y, int frameLengthMillis, int animationFrameCount, int frame)
 {
-  if (frame == 255) frame = FrameAnimation.GetCurrentFrameIndex(animationFrameCount, frameLengthMillis);
+  if (frame == 255) frame = FrameAnimation.GetCurrentFrameIndex(frameLengthMillis, animationFrameCount);
   
-  if (frame % 8 == 0)       DrawPacManChomp01(frame + x, y, 4);
-  else if (frame % 8 == 1)  DrawPacManChomp02(frame + x, y, 4);
-  else if (frame % 8 == 2)  DrawPacManChomp03(frame + x, y, 4);
-  else if (frame % 8 == 3)  DrawPacManChomp02(frame + x, y, 4);
-  else if (frame % 8 == 4)  DrawPacManChomp01(frame + x, y, 4);
-  else if (frame % 8 == 5)  DrawPacManChomp02(frame + x, y, 4);
-  else if (frame % 8 == 6)  DrawPacManChomp03(frame + x, y, 4);
-  else                      DrawPacManChomp02(frame + x, y, 4);
+  CRGB color1 = CRGB(GetColor(4, 0), GetColor(4, 1), GetColor(4, 2));
+
+  if (frame % 8 == 0)       DrawPacManChomp01(frame + x, y, color1);
+  else if (frame % 8 == 1)  DrawPacManChomp02(frame + x, y, color1);
+  else if (frame % 8 == 2)  DrawPacManChomp03(frame + x, y, color1);
+  else if (frame % 8 == 3)  DrawPacManChomp02(frame + x, y, color1);
+  else if (frame % 8 == 4)  DrawPacManChomp01(frame + x, y, color1);
+  else if (frame % 8 == 5)  DrawPacManChomp02(frame + x, y, color1);
+  else if (frame % 8 == 6)  DrawPacManChomp03(frame + x, y, color1);
+  else                      DrawPacManChomp02(frame + x, y, color1);
 }
 
-void GhostScreen::DrawPacManChomp01(int x, int y, byte color)
+void GhostScreen::DrawPacManChomp01(int x, int y, CRGB& color)
 {
 /*
  *     XXXXX
@@ -179,22 +161,22 @@ void GhostScreen::DrawPacManChomp01(int x, int y, byte color)
  *     XXXXX
  */
  
-  SetLightsByColorIndex(x - 2, y - 6, 5, color); //  START ROW -6
-  SetLightsByColorIndex(x - 4, y - 5, 9, color); //  START ROW -5
-  SetLightsByColorIndex(x - 5, y - 4, 11, color); //  START ROW -4
-  SetLightsByColorIndex(x - 5, y - 3, 11, color); //  START ROW -3
-  SetLightsByColorIndex(x - 6, y - 2, 13, color); //  START ROW -2
-  SetLightsByColorIndex(x - 6, y - 1, 13, color); //  START ROW -1
-  SetLightsByColorIndex(x - 6, y + 0, 13, color); //  START ROW +0
-  SetLightsByColorIndex(x - 6, y + 1, 13, color); //  START ROW +1
-  SetLightsByColorIndex(x - 6, y + 2, 13, color); //  START ROW +2
-  SetLightsByColorIndex(x - 5, y + 3, 11, color); //  START ROW +3
-  SetLightsByColorIndex(x - 5, y + 4, 11, color); //  START ROW +4
-  SetLightsByColorIndex(x - 4, y + 5, 9, color); //  START ROW +5
-  SetLightsByColorIndex(x - 2, y + 6, 5, color); //  START ROW +6
+  SetLightsByColorRef(x - 2, y - 6, 5, color); //  START ROW -6
+  SetLightsByColorRef(x - 4, y - 5, 9, color); //  START ROW -5
+  SetLightsByColorRef(x - 5, y - 4, 11, color); //  START ROW -4
+  SetLightsByColorRef(x - 5, y - 3, 11, color); //  START ROW -3
+  SetLightsByColorRef(x - 6, y - 2, 13, color); //  START ROW -2
+  SetLightsByColorRef(x - 6, y - 1, 13, color); //  START ROW -1
+  SetLightsByColorRef(x - 6, y + 0, 13, color); //  START ROW +0
+  SetLightsByColorRef(x - 6, y + 1, 13, color); //  START ROW +1
+  SetLightsByColorRef(x - 6, y + 2, 13, color); //  START ROW +2
+  SetLightsByColorRef(x - 5, y + 3, 11, color); //  START ROW +3
+  SetLightsByColorRef(x - 5, y + 4, 11, color); //  START ROW +4
+  SetLightsByColorRef(x - 4, y + 5, 9, color); //  START ROW +5
+  SetLightsByColorRef(x - 2, y + 6, 5, color); //  START ROW +6
 }
 
-void GhostScreen::DrawPacManChomp02(int x, int y, byte color)
+void GhostScreen::DrawPacManChomp02(int x, int y, CRGB& color)
 {
 /*
  *     XXXXX
@@ -212,22 +194,22 @@ void GhostScreen::DrawPacManChomp02(int x, int y, byte color)
  *     XXXXX
  */
  
-  SetLightsByColorIndex(x - 2, y - 6, 5, color); //  START ROW -6
-  SetLightsByColorIndex(x - 4, y - 5, 9, color); //  START ROW -5
-  SetLightsByColorIndex(x - 5, y - 4, 11, color); //  START ROW -4
-  SetLightsByColorIndex(x - 5, y - 3, 11, color); //  START ROW -3
-  SetLightsByColorIndex(x - 6, y - 2, 10, color); //  START ROW -2
-  SetLightsByColorIndex(x - 6, y - 1, 7, color); //  START ROW -1
-  SetLightsByColorIndex(x - 6, y + 0, 4, color); //  START ROW +0
-  SetLightsByColorIndex(x - 6, y + 1, 7, color); //  START ROW +1
-  SetLightsByColorIndex(x - 6, y + 2, 10, color); //  START ROW +2
-  SetLightsByColorIndex(x - 5, y + 3, 11, color); //  START ROW +3
-  SetLightsByColorIndex(x - 5, y + 4, 11, color); //  START ROW +4
-  SetLightsByColorIndex(x - 4, y + 5, 9, color); //  START ROW +5
-  SetLightsByColorIndex(x - 2, y + 6, 5, color); //  START ROW +6
+  SetLightsByColorRef(x - 2, y - 6, 5, color); //  START ROW -6
+  SetLightsByColorRef(x - 4, y - 5, 9, color); //  START ROW -5
+  SetLightsByColorRef(x - 5, y - 4, 11, color); //  START ROW -4
+  SetLightsByColorRef(x - 5, y - 3, 11, color); //  START ROW -3
+  SetLightsByColorRef(x - 6, y - 2, 10, color); //  START ROW -2
+  SetLightsByColorRef(x - 6, y - 1, 7, color); //  START ROW -1
+  SetLightsByColorRef(x - 6, y + 0, 4, color); //  START ROW +0
+  SetLightsByColorRef(x - 6, y + 1, 7, color); //  START ROW +1
+  SetLightsByColorRef(x - 6, y + 2, 10, color); //  START ROW +2
+  SetLightsByColorRef(x - 5, y + 3, 11, color); //  START ROW +3
+  SetLightsByColorRef(x - 5, y + 4, 11, color); //  START ROW +4
+  SetLightsByColorRef(x - 4, y + 5, 9, color); //  START ROW +5
+  SetLightsByColorRef(x - 2, y + 6, 5, color); //  START ROW +6
 }
 
-void GhostScreen::DrawPacManChomp03(int x, int y, byte color)
+void GhostScreen::DrawPacManChomp03(int x, int y, CRGB& color)
 {
 /*
  *     XXXXX
@@ -245,140 +227,541 @@ void GhostScreen::DrawPacManChomp03(int x, int y, byte color)
  *     XXXXX
  */
  
-  SetLightsByColorIndex(x - 2, y - 6, 5, color); //  START ROW -6
-  SetLightsByColorIndex(x - 4, y - 5, 7, color); //  START ROW -5
-  SetLightsByColorIndex(x - 5, y - 4, 7, color); //  START ROW -4
-  SetLightsByColorIndex(x - 5, y - 3, 6, color); //  START ROW -3
-  SetLightsByColorIndex(x - 6, y - 2, 6, color); //  START ROW -2
-  SetLightsByColorIndex(x - 6, y - 1, 5, color); //  START ROW -1
-  SetLightsByColorIndex(x - 6, y + 0, 4, color); //  START ROW +0
-  SetLightsByColorIndex(x - 6, y + 1, 5, color); //  START ROW +1
-  SetLightsByColorIndex(x - 6, y + 2, 6, color); //  START ROW +2
-  SetLightsByColorIndex(x - 5, y + 3, 6, color); //  START ROW +3
-  SetLightsByColorIndex(x - 5, y + 4, 7, color); //  START ROW +4
-  SetLightsByColorIndex(x - 4, y + 5, 7, color); //  START ROW +5
-  SetLightsByColorIndex(x - 2, y + 6, 5, color); //  START ROW +6
+  SetLightsByColorRef(x - 2, y - 6, 5, color); //  START ROW -6
+  SetLightsByColorRef(x - 4, y - 5, 7, color); //  START ROW -5
+  SetLightsByColorRef(x - 5, y - 4, 7, color); //  START ROW -4
+  SetLightsByColorRef(x - 5, y - 3, 6, color); //  START ROW -3
+  SetLightsByColorRef(x - 6, y - 2, 6, color); //  START ROW -2
+  SetLightsByColorRef(x - 6, y - 1, 5, color); //  START ROW -1
+  SetLightsByColorRef(x - 6, y + 0, 4, color); //  START ROW +0
+  SetLightsByColorRef(x - 6, y + 1, 5, color); //  START ROW +1
+  SetLightsByColorRef(x - 6, y + 2, 6, color); //  START ROW +2
+  SetLightsByColorRef(x - 5, y + 3, 6, color); //  START ROW +3
+  SetLightsByColorRef(x - 5, y + 4, 7, color); //  START ROW +4
+  SetLightsByColorRef(x - 4, y + 5, 7, color); //  START ROW +5
+  SetLightsByColorRef(x - 2, y + 6, 5, color); //  START ROW +6
 }
 
-void GhostScreen::PacManChompDanceThroughPlusGhost(int frameLength = 100, int animationFrameCount = 140)
+void GhostScreen::PacManChompDanceThroughPlusGhost(int frameLengthMillis, int animationFrameCount, int frame = 255)
 {
-  int frame = GetFrame(animationFrameCount, frameLength);
+  if (frame == 255) frame = FrameAnimation.GetCurrentFrameIndex(frameLengthMillis, animationFrameCount);
 
-  PacManChompDanceThrough(-6, 7, frameLength, animationFrameCount, frame);
-  PacManGhostDanceThrough(-26, 7, frameLength, 50, 7, 0, animationFrameCount, frame);
-  PacManGhostDanceThrough(-46, 7, frameLength, 51, 7, 0, animationFrameCount, frame);
-  PacManGhostDanceThrough(-66, 7, frameLength, 52, 7, 0, animationFrameCount, frame);
-  PacManGhostDanceThrough(-86, 7, frameLength, 53, 7, 0, animationFrameCount, frame);
+  PacManChompDanceThrough(-6, 7, frameLengthMillis, animationFrameCount, frame);
+  PacManGhostDanceThrough(-26, 7, frameLengthMillis, 50, 7, 0, animationFrameCount, frame);
+  PacManGhostDanceThrough(-46, 7, frameLengthMillis, 51, 7, 0, animationFrameCount, frame);
+  PacManGhostDanceThrough(-66, 7, frameLengthMillis, 52, 7, 0, animationFrameCount, frame);
+  PacManGhostDanceThrough(-86, 7, frameLengthMillis, 53, 7, 0, animationFrameCount, frame);
 }
 
 
-void GhostScreen::PacManGhostDanceThrough(int x = 6, int y = 14, int frameLength = 48, int body = 50, int eyeWhite = 7, int eyeBall = 0, int animationTime = 100, int frame = 255)
+void GhostScreen::PacManGhostDanceThrough(int x = 6, int y = 14, int frameLengthMillis = 48, int body = 50, int eyeWhite = 7, int eyeBall = 0, int animationFrameCount = 100, int frame = 255)
 {
-  if (frame == 255) frame = GetFrame(frameLength, animationTime);
+  if (frame == 255) frame = FrameAnimation.GetCurrentFrameIndex(frameLengthMillis, animationFrameCount);
+
+  CRGB bodyColor = CRGB(GetColor(body, 0), GetColor(body, 1), GetColor(body, 2));
+  CRGB eyeWhiteColor = CRGB(GetColor(eyeWhite, 0), GetColor(eyeWhite, 1), GetColor(eyeWhite, 2));
+  CRGB eyeBallColor = CRGB(GetColor(eyeBall, 0), GetColor(eyeBall, 1), GetColor(eyeBall, 2));
   
-  if (frame % 4 == 0)       DrawPacManGhostWalk01(frame + x, y, body, eyeWhite, eyeBall);
-  else if (frame % 4 == 1)  DrawPacManGhostWalk01(frame + x, y, body, eyeWhite, eyeBall);
-  else if (frame % 4 == 2)  DrawPacManGhostWalk02(frame + x, y, body, eyeWhite, eyeBall);
-  else if (frame % 4 == 3)  DrawPacManGhostWalk02(frame + x, y, body, eyeWhite, eyeBall);
+  if (frame % 4 == 0)       DrawPacManGhostWalk01(frame + x, y, bodyColor, eyeWhiteColor, eyeBallColor);
+  else if (frame % 4 == 1)  DrawPacManGhostWalk01(frame + x, y, bodyColor, eyeWhiteColor, eyeBallColor);
+  else if (frame % 4 == 2)  DrawPacManGhostWalk02(frame + x, y, bodyColor, eyeWhiteColor, eyeBallColor);
+  else if (frame % 4 == 3)  DrawPacManGhostWalk02(frame + x, y, bodyColor, eyeWhiteColor, eyeBallColor);
 }
 
-void GhostScreen::DrawPacManGhostWalk01(int x, int y, byte bodyColor = 50, byte eyeWhite = 7, byte eyeBall = 0)
+void GhostScreen::DrawPacManGhostWalk01(int x, int y, CRGB& bodyColor, CRGB& eyeWhite, CRGB& eyeBall)
 {
-  SetLightsByColorIndex(x - 2, y - 7, 4, bodyColor); // START ROW -7
-  SetLightsByColorIndex(x - 4, y - 6, 8, bodyColor); // START ROW -6
-  SetLightsByColorIndex(x - 5, y - 5, 10, bodyColor); // START ROW -5
-  SetLightsByColorIndex(x - 6, y - 4, 3, bodyColor); // START ROW -4
-  SetLightsByColorIndex(x - 3, y - 4, 2, eyeWhite);
-  SetLightsByColorIndex(x - 1, y - 4, 4, bodyColor);
-  SetLightsByColorIndex(x + 3, y - 4, 2, eyeWhite);
-  SetLEDByColorIndex(x + 5, y - 4, bodyColor);
-  SetLightsByColorIndex(x - 6, y - 3, 2, bodyColor); // START ROW -3
-  SetLightsByColorIndex(x - 4, y - 3, 4, eyeWhite);
-  SetLightsByColorIndex(x + 0, y - 3, 2, bodyColor);
-  SetLightsByColorIndex(x + 2, y - 3, 4, eyeWhite);
-  SetLightsByColorIndex(x - 6, y - 2, 2, bodyColor); // START ROW -2
-  SetLightsByColorIndex(x - 4, y - 2, 2, eyeWhite);
-  SetLightsByColorIndex(x - 2, y - 2, 2, eyeBall);
-  SetLightsByColorIndex(x + 0, y - 2, 2, bodyColor);
-  SetLightsByColorIndex(x + 2, y - 2, 2, eyeWhite);
-  SetLightsByColorIndex(x + 4, y - 2, 2, eyeBall);
-  SetLightsByColorIndex(x - 7, y - 1, 3, bodyColor); // START ROW -1
-  SetLightsByColorIndex(x - 4, y - 1, 2, eyeWhite);
-  SetLightsByColorIndex(x - 2, y - 1, 2, eyeBall);
-  SetLightsByColorIndex(x + 0, y - 1, 2, bodyColor);
-  SetLightsByColorIndex(x + 2, y - 1, 2, eyeWhite);
-  SetLightsByColorIndex(x + 4, y - 1, 2, eyeBall);
-  SetLEDByColorIndex(x + 6, y - 1, bodyColor);
-  SetLightsByColorIndex(x - 7, y + 0, 4, bodyColor); // START ROW +0
-  SetLightsByColorIndex(x - 3, y + 0, 2, eyeWhite);
-  SetLightsByColorIndex(x - 1, y + 0, 4, bodyColor);
-  SetLightsByColorIndex(x + 3, y + 0, 2, eyeWhite);
-  SetLightsByColorIndex(x + 5, y + 0, 2, bodyColor);
-  SetLightsByColorIndex(x - 7, y + 1, 14, bodyColor); // START ROW +1
-  SetLightsByColorIndex(x - 7, y + 2, 14, bodyColor); // START ROW +2
-  SetLightsByColorIndex(x - 7, y + 3, 14, bodyColor); // START ROW +3
-  SetLightsByColorIndex(x - 7, y + 4, 14, bodyColor); // START ROW +4
-  SetLightsByColorIndex(x - 7, y + 5, 4, bodyColor); // START ROW +5
-  SetLightsByColorIndex(x - 2, y + 5, 4, bodyColor);
-  SetLightsByColorIndex(x + 3, y + 5, 4, bodyColor);
-  SetLightsByColorIndex(x - 6, y + 6, 2, bodyColor); // START ROW +6
-  SetLightsByColorIndex(x - 1, y + 6, 2, bodyColor);
-  SetLightsByColorIndex(x + 4, y + 6, 2, bodyColor);
+  SetLightsByColorRef(x - 2, y - 7, 4, bodyColor); // START ROW -7
+  SetLightsByColorRef(x - 4, y - 6, 8, bodyColor); // START ROW -6
+  SetLightsByColorRef(x - 5, y - 5, 10, bodyColor); // START ROW -5
+  SetLightsByColorRef(x - 6, y - 4, 3, bodyColor); // START ROW -4
+  SetLightsByColorRef(x - 3, y - 4, 2, eyeWhite);
+  SetLightsByColorRef(x - 1, y - 4, 4, bodyColor);
+  SetLightsByColorRef(x + 3, y - 4, 2, eyeWhite);
+  SetLEDByColorRef(x + 5, y - 4, bodyColor);
+  SetLightsByColorRef(x - 6, y - 3, 2, bodyColor); // START ROW -3
+  SetLightsByColorRef(x - 4, y - 3, 4, eyeWhite);
+  SetLightsByColorRef(x + 0, y - 3, 2, bodyColor);
+  SetLightsByColorRef(x + 2, y - 3, 4, eyeWhite);
+  SetLightsByColorRef(x - 6, y - 2, 2, bodyColor); // START ROW -2
+  SetLightsByColorRef(x - 4, y - 2, 2, eyeWhite);
+  SetLightsByColorRef(x - 2, y - 2, 2, eyeBall);
+  SetLightsByColorRef(x + 0, y - 2, 2, bodyColor);
+  SetLightsByColorRef(x + 2, y - 2, 2, eyeWhite);
+  SetLightsByColorRef(x + 4, y - 2, 2, eyeBall);
+  SetLightsByColorRef(x - 7, y - 1, 3, bodyColor); // START ROW -1
+  SetLightsByColorRef(x - 4, y - 1, 2, eyeWhite);
+  SetLightsByColorRef(x - 2, y - 1, 2, eyeBall);
+  SetLightsByColorRef(x + 0, y - 1, 2, bodyColor);
+  SetLightsByColorRef(x + 2, y - 1, 2, eyeWhite);
+  SetLightsByColorRef(x + 4, y - 1, 2, eyeBall);
+  SetLEDByColorRef(x + 6, y - 1, bodyColor);
+  SetLightsByColorRef(x - 7, y + 0, 4, bodyColor); // START ROW +0
+  SetLightsByColorRef(x - 3, y + 0, 2, eyeWhite);
+  SetLightsByColorRef(x - 1, y + 0, 4, bodyColor);
+  SetLightsByColorRef(x + 3, y + 0, 2, eyeWhite);
+  SetLightsByColorRef(x + 5, y + 0, 2, bodyColor);
+  SetLightsByColorRef(x - 7, y + 1, 14, bodyColor); // START ROW +1
+  SetLightsByColorRef(x - 7, y + 2, 14, bodyColor); // START ROW +2
+  SetLightsByColorRef(x - 7, y + 3, 14, bodyColor); // START ROW +3
+  SetLightsByColorRef(x - 7, y + 4, 14, bodyColor); // START ROW +4
+  SetLightsByColorRef(x - 7, y + 5, 4, bodyColor); // START ROW +5
+  SetLightsByColorRef(x - 2, y + 5, 4, bodyColor);
+  SetLightsByColorRef(x + 3, y + 5, 4, bodyColor);
+  SetLightsByColorRef(x - 6, y + 6, 2, bodyColor); // START ROW +6
+  SetLightsByColorRef(x - 1, y + 6, 2, bodyColor);
+  SetLightsByColorRef(x + 4, y + 6, 2, bodyColor);
 }
 
-void GhostScreen::DrawPacManGhostWalk02(int x, int y, byte bodyColor = 50, byte eyeWhite = 7, byte eyeBall = 0)
+void GhostScreen::DrawPacManGhostWalk02(int x, int y, CRGB& bodyColor, CRGB& eyeWhite, CRGB& eyeBall)
 {
-  SetLightsByColorIndex(x - 2, y - 7, 4, bodyColor); // START ROW -7
-  SetLightsByColorIndex(x - 4, y - 6, 8, bodyColor); // START ROW -6
-  SetLightsByColorIndex(x - 5, y - 5, 10, bodyColor); // START ROW -5
-  SetLightsByColorIndex(x - 6, y - 4, 3, bodyColor); // START ROW -4
-  SetLightsByColorIndex(x - 3, y - 4, 2, eyeWhite);
-  SetLightsByColorIndex(x - 1, y - 4, 4, bodyColor);
-  SetLightsByColorIndex(x + 3, y - 4, 2, eyeWhite);
-  SetLEDByColorIndex(x + 5, y - 4, bodyColor);
-  SetLightsByColorIndex(x - 6, y - 3, 2, bodyColor); // START ROW -3
-  SetLightsByColorIndex(x - 4, y - 3, 4, eyeWhite);
-  SetLightsByColorIndex(x + 0, y - 3, 2, bodyColor);
-  SetLightsByColorIndex(x + 2, y - 3, 4, eyeWhite);
-  SetLightsByColorIndex(x - 6, y - 2, 2, bodyColor); // START ROW -2
-  SetLightsByColorIndex(x - 4, y - 2, 2, eyeWhite);
-  SetLightsByColorIndex(x - 2, y - 2, 2, eyeBall);
-  SetLightsByColorIndex(x + 0, y - 2, 2, bodyColor);
-  SetLightsByColorIndex(x + 2, y - 2, 2, eyeWhite);
-  SetLightsByColorIndex(x + 4, y - 2, 2, eyeBall);
-  SetLightsByColorIndex(x - 7, y - 1, 3, bodyColor); // START ROW -1
-  SetLightsByColorIndex(x - 4, y - 1, 2, eyeWhite);
-  SetLightsByColorIndex(x - 2, y - 1, 2, eyeBall);
-  SetLightsByColorIndex(x + 0, y - 1, 2, bodyColor);
-  SetLightsByColorIndex(x + 2, y - 1, 2, eyeWhite);
-  SetLightsByColorIndex(x + 4, y - 1, 2, eyeBall);
-  SetLEDByColorIndex(x + 6, y - 1, bodyColor);
-  SetLightsByColorIndex(x - 7, y + 0, 4, bodyColor); // START ROW +0
-  SetLightsByColorIndex(x - 3, y + 0, 2, eyeWhite);
-  SetLightsByColorIndex(x - 1, y + 0, 4, bodyColor);
-  SetLightsByColorIndex(x + 3, y + 0, 2, eyeWhite);
-  SetLightsByColorIndex(x + 5, y + 0, 2, bodyColor);
-  SetLightsByColorIndex(x - 7, y + 1, 14, bodyColor); // START ROW +1
-  SetLightsByColorIndex(x - 7, y + 2, 14, bodyColor); // START ROW +2
-  SetLightsByColorIndex(x - 7, y + 3, 14, bodyColor); // START ROW +3
-  SetLightsByColorIndex(x - 7, y + 4, 14, bodyColor); // START ROW +4
-  SetLightsByColorIndex(x - 7, y + 5, 2, bodyColor); // START ROW +5
-  SetLightsByColorIndex(x - 4, y + 5, 3, bodyColor);
-  SetLightsByColorIndex(x + 1, y + 5, 3, bodyColor);
-  SetLightsByColorIndex(x + 5, y + 5, 2, bodyColor);
-  SetLEDByColorIndex(x - 7, y + 6, bodyColor); // START ROW +6
-  SetLightsByColorIndex(x - 3, y + 6, 2, bodyColor);
-  SetLightsByColorIndex(x + 1, y + 6, 2, bodyColor);
-  SetLEDByColorIndex(x + 6, y + 6, bodyColor);
+  SetLightsByColorRef(x - 2, y - 7, 4, bodyColor); // START ROW -7
+  SetLightsByColorRef(x - 4, y - 6, 8, bodyColor); // START ROW -6
+  SetLightsByColorRef(x - 5, y - 5, 10, bodyColor); // START ROW -5
+  SetLightsByColorRef(x - 6, y - 4, 3, bodyColor); // START ROW -4
+  SetLightsByColorRef(x - 3, y - 4, 2, eyeWhite);
+  SetLightsByColorRef(x - 1, y - 4, 4, bodyColor);
+  SetLightsByColorRef(x + 3, y - 4, 2, eyeWhite);
+  SetLEDByColorRef(x + 5, y - 4, bodyColor);
+  SetLightsByColorRef(x - 6, y - 3, 2, bodyColor); // START ROW -3
+  SetLightsByColorRef(x - 4, y - 3, 4, eyeWhite);
+  SetLightsByColorRef(x + 0, y - 3, 2, bodyColor);
+  SetLightsByColorRef(x + 2, y - 3, 4, eyeWhite);
+  SetLightsByColorRef(x - 6, y - 2, 2, bodyColor); // START ROW -2
+  SetLightsByColorRef(x - 4, y - 2, 2, eyeWhite);
+  SetLightsByColorRef(x - 2, y - 2, 2, eyeBall);
+  SetLightsByColorRef(x + 0, y - 2, 2, bodyColor);
+  SetLightsByColorRef(x + 2, y - 2, 2, eyeWhite);
+  SetLightsByColorRef(x + 4, y - 2, 2, eyeBall);
+  SetLightsByColorRef(x - 7, y - 1, 3, bodyColor); // START ROW -1
+  SetLightsByColorRef(x - 4, y - 1, 2, eyeWhite);
+  SetLightsByColorRef(x - 2, y - 1, 2, eyeBall);
+  SetLightsByColorRef(x + 0, y - 1, 2, bodyColor);
+  SetLightsByColorRef(x + 2, y - 1, 2, eyeWhite);
+  SetLightsByColorRef(x + 4, y - 1, 2, eyeBall);
+  SetLEDByColorRef(x + 6, y - 1, bodyColor);
+  SetLightsByColorRef(x - 7, y + 0, 4, bodyColor); // START ROW +0
+  SetLightsByColorRef(x - 3, y + 0, 2, eyeWhite);
+  SetLightsByColorRef(x - 1, y + 0, 4, bodyColor);
+  SetLightsByColorRef(x + 3, y + 0, 2, eyeWhite);
+  SetLightsByColorRef(x + 5, y + 0, 2, bodyColor);
+  SetLightsByColorRef(x - 7, y + 1, 14, bodyColor); // START ROW +1
+  SetLightsByColorRef(x - 7, y + 2, 14, bodyColor); // START ROW +2
+  SetLightsByColorRef(x - 7, y + 3, 14, bodyColor); // START ROW +3
+  SetLightsByColorRef(x - 7, y + 4, 14, bodyColor); // START ROW +4
+  SetLightsByColorRef(x - 7, y + 5, 2, bodyColor); // START ROW +5
+  SetLightsByColorRef(x - 4, y + 5, 3, bodyColor);
+  SetLightsByColorRef(x + 1, y + 5, 3, bodyColor);
+  SetLightsByColorRef(x + 5, y + 5, 2, bodyColor);
+  SetLEDByColorRef(x - 7, y + 6, bodyColor); // START ROW +6
+  SetLightsByColorRef(x - 3, y + 6, 2, bodyColor);
+  SetLightsByColorRef(x + 1, y + 6, 2, bodyColor);
+  SetLEDByColorRef(x + 6, y + 6, bodyColor);
 }
+
+
+void GhostScreen::DrawMsPacManChomp01(int x, int y, CRGB& color1, CRGB& color2, CRGB& color3)
+{
+/*
+ *           OO
+ *      XXXXOOO
+ *    XXXXXXOOMO
+ *   XXXXXXXXXOMOO
+ *   XXXXXXXXXXOOO
+ *  XXXXXX    XOO
+ * MXXXXXXXXXXXXX
+ * MMXXXXXXXXXXXX
+ * MXXXXXXXXXXXXX
+ *  XXXXXXXXX XXX
+ *   XXXXXXXXXXX
+ *   XXXXXXXXXXX
+ *    XXXXXXXXX
+ *      XXXXX
+ */
+
+  SetLightsByColorRef(x + 3, y - 7, 2, color2); //  START ROW -7
+  SetLightsByColorRef(x - 2, y - 6, 4, color1); //  START ROW -6 
+  SetLightsByColorRef(x + 2, y - 6, 3, color2);
+  SetLightsByColorRef(x - 4, y - 5, 6, color1); //  START ROW -5
+  SetLightsByColorRef(x + 2, y - 5, 2, color2);
+  SetLEDByColorRef(x + 4, y - 5, color3);
+  SetLEDByColorRef(x + 5, y - 5, color2);
+  SetLightsByColorRef(x - 5, y - 4, 9, color1); //  START ROW -4
+  SetLEDByColorRef(x + 4, y - 4, color2);
+  SetLEDByColorRef(x + 5, y - 4, color3);
+  SetLightsByColorRef(x + 6, y - 4, 2, color2);
+  SetLightsByColorRef(x - 5, y - 3, 10, color1); //  START ROW -3
+  SetLightsByColorRef(x + 5, y - 3, 3, color2);
+  SetLightsByColorRef(x - 6, y - 2, 5, color1); //  START ROW -2
+  SetLEDByColorRef(x + 4, y - 2, color1);
+  SetLightsByColorRef(x + 5, y - 2, 2, color2);
+  SetLEDByColorRef(x - 7, y - 1, color2); //  START ROW -1
+  SetLightsByColorRef(x - 6, y - 1, 13, color1);
+  SetLightsByColorRef(x - 7, y + 0, 2, color2); //  START ROW +0
+  SetLightsByColorRef(x - 5, y + 0, 12, color1);
+  SetLEDByColorRef(x - 7, y + 1, color2); //  START ROW +1
+  SetLightsByColorRef(x - 6, y + 1, 13, color1);
+  SetLightsByColorRef(x - 6, y + 2, 9, color1); //  START ROW +2
+  SetLightsByColorRef(x + 4, y + 2, 3, color1);
+  SetLightsByColorRef(x - 5, y + 3, 11, color1); //  START ROW +3
+  SetLightsByColorRef(x - 5, y + 4, 11, color1); //  START ROW +4
+  SetLightsByColorRef(x - 4, y + 5, 9, color1); //  START ROW +5
+  SetLightsByColorRef(x - 2, y + 6, 5, color1); //  START ROW +6
+}
+
+void GhostScreen::DrawMsPacManChomp02(int x, int y, CRGB& color1, CRGB& color2, CRGB& color3)
+{
+/*
+ *           OO
+ *      XXXXOOO
+ *    XXXXXXOOMO
+ *   XXXXXXXXXOMOO
+ *   MMXXX  XXXOOO
+ *       XXM XXOO
+ *         XXXXXX
+ *           XXXX
+ *         XXXXXX
+ *       XXXX XXX
+ *   MMXXXXXXXXX
+ *   XXXXXXXXXXX
+ *    XXXXXXXXX
+ *      XXXXX
+ */
+
+  SetLightsByColorRef(x + 3, y - 7, 2, color2); //  START ROW -7
+  SetLightsByColorRef(x - 2, y - 6, 4, color2); //  START ROW -6 
+  SetLightsByColorRef(x + 2, y - 6, 3, color2);
+  SetLightsByColorRef(x - 4, y - 5, 4, color1); //  START ROW -5
+  SetLightsByColorRef(x + 2, y - 5, 2, color2);
+  SetLEDByColorRef(x + 4, y - 5, color3);
+  SetLEDByColorRef(x + 5, y - 5, color2);
+  SetLightsByColorRef(x - 5, y - 4, 9, color1); //  START ROW -4
+  SetLEDByColorRef(x + 4, y - 4, color2);
+  SetLEDByColorRef(x + 5, y - 4, color3);
+  SetLightsByColorRef(x + 6, y - 4, 2, color2);
+  SetLightsByColorRef(x - 5, y - 3, 2, color2); //  START ROW -3
+  SetLightsByColorRef(x - 3, y - 3, 3, color1);
+  SetLightsByColorRef(x + 2, y - 3, 3, color1);
+  SetLightsByColorRef(x + 5, y - 3, 3, color2);
+  SetLightsByColorRef(x - 1, y - 2, 2, color1); //  START ROW -2
+  SetLEDByColorRef(x + 1, y - 2, color3);
+  SetLightsByColorRef(x + 3, y - 2, 2, color1);
+  SetLightsByColorRef(x + 5, y - 2, 2, color2);
+  SetLightsByColorRef(x + 1, y - 1, 6, color1); //  START ROW -1
+  SetLightsByColorRef(x + 3, y + 0, 4, color1); //  START ROW +0
+  SetLightsByColorRef(x + 1, y + 1, 6, color1); //  START ROW +1
+  SetLightsByColorRef(x - 1, y + 2, 4, color1); //  START ROW +2
+  SetLightsByColorRef(x + 4, y + 2, 3, color1);
+  SetLightsByColorRef(x - 5, y + 3, 2, color2); //  START ROW +3
+  SetLightsByColorRef(x - 3, y + 3, 9, color1);
+  SetLightsByColorRef(x - 5, y + 4, 11, color1); //  START ROW +4
+  SetLightsByColorRef(x - 4, y + 5, 9, color1); //  START ROW +5
+  SetLightsByColorRef(x - 2, y + 6, 5, color1); //  START ROW +6
+}
+
+void GhostScreen::DrawMsPacManChomp03(int x, int y, CRGB& color1, CRGB& color2, CRGB& color3)
+{
+/*
+ *           OO
+ *     MXXXXOOO
+ *      MXXXOOMO
+ *       XX XXOMOO
+ *        X  XXOOO
+ *         XM XOO
+ *          XXXXX
+ *           XXXX
+ *          XXXXX
+ *         XX XXX
+ *        XXXXXX
+ *       XXXXXXX
+ *      MXXXXXX
+ *     MXXXXX
+ */
+
+  SetLightsByColorRef(x + 3, y - 7, 2, color2); //  START ROW -7
+  SetLEDByColorRef(x - 3, y - 6, color2); //  START ROW -6 
+  SetLightsByColorRef(x - 2, y - 6, 4, color1);
+  SetLightsByColorRef(x + 2, y - 6, 3, color2);
+  SetLEDByColorRef(x - 2, y - 5, color2); //  START ROW -5
+  SetLightsByColorRef(x - 1, y - 5, 3, color1);
+  SetLightsByColorRef(x + 2, y - 5, 2, color2);
+  SetLEDByColorRef(x + 4, y - 5, color3);
+  SetLEDByColorRef(x + 5, y - 5, color2);
+  SetLightsByColorRef(x - 1, y - 4, 2, color1); //  START ROW -4
+  SetLightsByColorRef(x + 2, y - 4, 2, color1);
+  SetLEDByColorRef(x + 4, y - 4, color2);
+  SetLEDByColorRef(x + 5, y - 4, color3);
+  SetLightsByColorRef(x + 6, y - 4, 2, color2);
+  SetLEDByColorRef(x + 0, y - 3, color1); //  START ROW -3
+  SetLightsByColorRef(x + 3, y - 3, 2, color1);
+  SetLightsByColorRef(x + 5, y - 3, 3, color2);
+  SetLEDByColorRef(x + 1, y - 2, color1); //  START ROW -2
+  SetLEDByColorRef(x + 2, y - 2, color3);
+  SetLEDByColorRef(x + 4, y - 2, color1);
+  SetLightsByColorRef(x + 5, y - 2, 2, color2);
+  SetLightsByColorRef(x + 2, y - 1, 5, color1); //  START ROW -1
+  SetLightsByColorRef(x + 3, y + 0, 4, color1); //  START ROW +0
+  SetLightsByColorRef(x + 2, y + 1, 5, color1); //  START ROW +1
+  SetLightsByColorRef(x + 1, y + 2, 2, color1); //  START ROW +2
+  SetLightsByColorRef(x + 4, y + 2, 3, color1);
+  SetLightsByColorRef(x + 0, y + 3, 6, color1); //  START ROW +3
+  SetLightsByColorRef(x - 1, y + 4, 7, color1); //  START ROW +4
+  SetLEDByColorRef(x - 2, y + 5, color2); //  START ROW +5
+  SetLightsByColorRef(x - 1, y + 5, 6, color1);
+  SetLEDByColorRef(x - 3, y + 6, color2);  //  START ROW +6
+  SetLightsByColorRef(x - 2, y + 6, 5, color1);
+}
+
+void GhostScreen::MsPacManChompDanceThrough(int frameLengthMillis = 100, int animationFrameCount = 48, int frame = 255)
+{
+  if (frame == 255) frame = FrameAnimation.GetCurrentFrameIndex(frameLengthMillis, animationFrameCount);
+  
+  CRGB body = CRGB(GetColor(4, 0), GetColor(4, 1), GetColor(4, 2));
+  CRGB bow = CRGB(GetColor(1, 0), GetColor(1, 1), GetColor(1, 2));
+  CRGB eye = CRGB(GetColor(3, 0), GetColor(3, 1), GetColor(3, 2));
+
+  if (frame % 8 == 0)       DrawMsPacManChomp01(SCREEN_WIDTH - frame + 6, 7, body, bow, eye);
+  else if (frame % 8 == 1)  DrawMsPacManChomp01(SCREEN_WIDTH - frame + 6, 7, body, bow, eye);
+  else if (frame % 8 == 2)  DrawMsPacManChomp02(SCREEN_WIDTH - frame + 6, 7, body, bow, eye);
+  else if (frame % 8 == 3)  DrawMsPacManChomp02(SCREEN_WIDTH - frame + 6, 7, body, bow, eye);
+  else if (frame % 8 == 4)  DrawMsPacManChomp03(SCREEN_WIDTH - frame + 6, 7, body, bow, eye);
+  else if (frame % 8 == 5)  DrawMsPacManChomp03(SCREEN_WIDTH - frame + 6, 7, body, bow, eye);
+  else if (frame % 8 == 6)  DrawMsPacManChomp02(SCREEN_WIDTH - frame + 6, 7, body, bow, eye);
+  else                      DrawMsPacManChomp02(SCREEN_WIDTH - frame + 6, 7, body, bow, eye);
+}
+
+void GhostScreen::DrawSpaceInvader01(int x, int y, CRGB& color1, CRGB& color2)
+{
+/*
+ *   X     X
+ *    X   X
+ *   OOOOOOO 
+ *  OO OOO OO
+ * XXXXXXXXXXX
+ * X XXXXXXX X
+ * X X     X X
+ *    XX XX
+ */
+ 
+  SetLEDByColorRef(x - 3, y - 4, color1); // START ROW -4
+  SetLEDByColorRef(x + 3, y - 4, color1);
+  SetLEDByColorRef(x - 2, y - 3, color1); // START ROW -3
+  SetLEDByColorRef(x + 2, y - 3, color1);
+  SetLightsByColorRef(x - 3, y - 2, 7, color2); // START ROW -2
+  SetLightsByColorRef(x - 4, y - 1, 2, color2); //  START ROW -1
+  SetLightsByColorRef(x - 1, y - 1, 3, color2);
+  SetLightsByColorRef(x + 3, y - 1, 2, color2);
+  SetLightsByColorRef(x - 5, y, 11, color1); //  START ROW +0
+  SetLEDByColorRef(x - 5, y + 1, color1); //  START ROW +1
+  SetLightsByColorRef(x - 3, y + 1, 7, color1);
+  SetLEDByColorRef(x + 5, y + 1, color1);
+  SetLEDByColorRef(x - 5, y + 2, color1); //  START ROW +2
+  SetLEDByColorRef(x - 3, y + 2, color1);
+  SetLEDByColorRef(x + 3, y + 2, color1);
+  SetLEDByColorRef(x + 5, y + 2, color1);
+  SetLightsByColorRef(x - 2, y + 3, 2, color1); //  START ROW +3
+  SetLightsByColorRef(x + 1, y + 3, 2, color1);
+}
+
+void GhostScreen::DrawSpaceInvader02(int x, int y, CRGB& color1, CRGB& color2)
+{
+/*
+ *   X     X
+ *    X   X
+ * O OOOOOOO O
+ * OOO OOO OOO
+ * XXXXXXXXXXX
+ *   XXXXXXX 
+ *   X     X 
+ *  X       X
+ */
+ 
+  SetLEDByColorRef(x - 3, y - 4, color1); // START ROW -4
+  SetLEDByColorRef(x + 3, y - 4, color1);
+  SetLEDByColorRef(x - 2, y - 3, color1); // START ROW -3
+  SetLEDByColorRef(x + 2, y - 3, color1);
+  SetLEDByColorRef(x - 5, y - 2, color2); // START ROW -2
+  SetLightsByColorRef(x - 3, y - 2, 7, color2);
+  SetLEDByColorRef(x + 5, y - 2, color2);
+  SetLightsByColorRef(x - 5, y - 1, 3, color2); //  START ROW -1
+  SetLightsByColorRef(x - 1, y - 1, 3, color2);
+  SetLightsByColorRef(x + 3, y - 1, 3, color2);
+  SetLightsByColorRef(x - 5, y, 11, color1); //  START ROW +0
+  SetLightsByColorRef(x - 3, y + 1, 7, color1); //  START ROW +1
+  SetLEDByColorRef(x - 3, y + 2, color1); //  START ROW +2
+  SetLEDByColorRef(x + 3, y + 2, color1);
+  SetLEDByColorRef(x - 4, y + 3, color1); //  START ROW +3
+  SetLEDByColorRef(x + 4, y + 3, color1);
+}
+
+void GhostScreen::SpaceInvaderDanceThrough(byte body = 7, byte mask = 7, int frame = 255)
+{
+  if (frame == 255) frame = FrameAnimation.GetCurrentFrameIndex(333, 40);
+
+  CRGB color1 = CRGB(GetColor(body, 0), GetColor(body, 1), GetColor(body, 2));
+  CRGB color2 = CRGB(GetColor(mask, 0), GetColor(mask, 1), GetColor(mask, 2));
+  
+  if (frame & 1)  DrawSpaceInvader01(frame - 6, 7, color1, color2);
+  else            DrawSpaceInvader02(frame - 6, 7, color1, color2);
+}
+
+
+void GhostScreen::DrawLetter_A(int x, int y, CRGB& color)
+{
+  // * XXXXXXXXXXXXXX
+  // * XXXXXXXXXXXXXX
+  // * XXXX      XXXX
+  // * XXXX      XXXX
+  // * XXXX      XXXX
+  // * XXXXXXXXXXXXXX
+  // * XXXXXXXXXXXXXX
+  // * XXXX      XXXX
+  // * XXXX      XXXX
+  // * XXXX      XXXX
+  // * XXXX      XXXX
+  // * XXXX      XXXX
+
+  SetLightsByColorRef(x - 6, y - 5, 14, color);   //  START ROW -5
+  SetLightsByColorRef(x - 6, y - 4, 14, color);   //  START ROW -4
+  SetLightsByColorRef(x - 6, y - 3, 4, color);    //  START ROW -3
+  SetLightsByColorRef(x + 4, y - 3, 4, color);
+  SetLightsByColorRef(x - 6, y - 2, 4, color);    //  START ROW -2
+  SetLightsByColorRef(x + 4, y - 2, 4, color);
+  SetLightsByColorRef(x - 6, y - 1, 4, color);    //  START ROW -1
+  SetLightsByColorRef(x + 4, y - 1, 4, color);
+  SetLightsByColorRef(x - 6, y + 0, 14, color);   //  START ROW +0
+  SetLightsByColorRef(x - 6, y + 1, 14, color);   //  START ROW +1
+  SetLightsByColorRef(x - 6, y + 2, 4, color);    //  START ROW +2
+  SetLightsByColorRef(x + 4, y + 2, 4, color);
+  SetLightsByColorRef(x - 6, y + 3, 4, color);    //  START ROW +3
+  SetLightsByColorRef(x + 4, y + 3, 4, color);
+  SetLightsByColorRef(x - 6, y + 4, 4, color);    //  START ROW +4
+  SetLightsByColorRef(x + 4, y + 4, 4, color);
+  SetLightsByColorRef(x - 6, y + 5, 4, color);    //  START ROW +5
+  SetLightsByColorRef(x + 4, y + 5, 4, color);
+  SetLightsByColorRef(x - 6, y + 6, 4, color);    //  START ROW +6
+  SetLightsByColorRef(x + 4, y + 6, 4, color);
+}
+
+void GhostScreen::DrawLetter_B(int x, int y, CRGB& color)
+{
+  // * XXXXXXXXXXXXXX
+  // * XXXXXXXXXXXXXX
+  // * XXXX      XXXX
+  // * XXXX      XXXX
+  // * XXXX      XXXX
+  // * XXXXXXXXXXXX
+  // * XXXXXXXXXXXX
+  // * XXXX      XXXX
+  // * XXXX      XXXX
+  // * XXXX      XXXX
+  // * XXXXXXXXXXXXXX
+  // * XXXXXXXXXXXXXX
+
+  SetLightsByColorRef(x - 6, y - 5, 14, color);   //  START ROW -5
+  SetLightsByColorRef(x - 6, y - 4, 14, color);   //  START ROW -4
+  SetLightsByColorRef(x - 6, y - 3, 4, color);    //  START ROW -3
+  SetLightsByColorRef(x + 4, y - 3, 4, color);
+  SetLightsByColorRef(x - 6, y - 2, 4, color);    //  START ROW -2
+  SetLightsByColorRef(x + 4, y - 2, 4, color);
+  SetLightsByColorRef(x - 6, y - 1, 4, color);    //  START ROW -1
+  SetLightsByColorRef(x + 4, y - 1, 4, color);
+  SetLightsByColorRef(x - 6, y + 0, 12, color);   //  START ROW +0
+  SetLightsByColorRef(x - 6, y + 1, 12, color);   //  START ROW +1
+  SetLightsByColorRef(x - 6, y + 2, 4, color);    //  START ROW +2
+  SetLightsByColorRef(x + 4, y + 2, 4, color);
+  SetLightsByColorRef(x - 6, y + 3, 4, color);    //  START ROW +3
+  SetLightsByColorRef(x + 4, y + 3, 4, color);
+  SetLightsByColorRef(x - 6, y + 4, 4, color);    //  START ROW +4
+  SetLightsByColorRef(x + 4, y + 4, 4, color);
+  SetLightsByColorRef(x - 6, y + 5, 14, color);   //  START ROW +5
+  SetLightsByColorRef(x - 6, y + 6, 14, color);   //  START ROW +6
+}
+
+void GhostScreen::DrawLetter_C(int x, int y, CRGB& color)
+{
+  // * XXXXXXXXXXXXXX
+  // * XXXXXXXXXXXXXX
+  // * XXXX
+  // * XXXX
+  // * XXXX
+  // * XXXX
+  // * XXXX
+  // * XXXX
+  // * XXXX
+  // * XXXX
+  // * XXXXXXXXXXXXXX
+  // * XXXXXXXXXXXXXX
+
+  SetLightsByColorRef(x - 6, y - 5, 14, color);   //  START ROW -5
+  SetLightsByColorRef(x - 6, y - 4, 14, color);   //  START ROW -4
+  SetLightsByColorRef(x - 6, y - 3, 4, color);    //  START ROW -3
+  SetLightsByColorRef(x - 6, y - 2, 4, color);    //  START ROW -2
+  SetLightsByColorRef(x - 6, y - 1, 4, color);    //  START ROW -1
+  SetLightsByColorRef(x - 6, y + 0, 4, color);    //  START ROW +0
+  SetLightsByColorRef(x - 6, y + 1, 4, color);    //  START ROW +1
+  SetLightsByColorRef(x - 6, y + 2, 4, color);    //  START ROW +2
+  SetLightsByColorRef(x - 6, y + 3, 4, color);    //  START ROW +3
+  SetLightsByColorRef(x - 6, y + 4, 4, color);    //  START ROW +4
+  SetLightsByColorRef(x - 6, y + 5, 14, color);   //  START ROW +5
+  SetLightsByColorRef(x - 6, y + 6, 14, color);   //  START ROW +6
+}
+
+void GhostScreen::DrawLetter_R(int x, int y, CRGB& color)
+{
+  // * XXXXXXXXXXXXXX
+  // * XXXXXXXXXXXXXX
+  // * XXXX      XXXX
+  // * XXXX      XXXX
+  // * XXXX      XXXX
+  // * XXXXXXXXXXXX
+  // * XXXXXXXXXXXX
+  // * XXXX      XXXX
+  // * XXXX      XXXX
+  // * XXXX      XXXX
+  // * XXXX      XXXX
+  // * XXXX      XXXX
+
+  SetLightsByColorRef(x - 6, y - 5, 14, color);   //  START ROW -5
+  SetLightsByColorRef(x - 6, y - 4, 14, color);   //  START ROW -4
+  SetLightsByColorRef(x - 6, y - 3, 4, color);    //  START ROW -3
+  SetLightsByColorRef(x + 4, y - 3, 4, color);
+  SetLightsByColorRef(x - 6, y - 2, 4, color);    //  START ROW -2
+  SetLightsByColorRef(x + 4, y - 2, 4, color);
+  SetLightsByColorRef(x - 6, y - 1, 4, color);    //  START ROW -1
+  SetLightsByColorRef(x + 4, y - 1, 4, color);
+  SetLightsByColorRef(x - 6, y + 0, 12, color);   //  START ROW +0
+  SetLightsByColorRef(x - 6, y + 1, 12, color);   //  START ROW +1
+  SetLightsByColorRef(x - 6, y + 2, 4, color);    //  START ROW +2
+  SetLightsByColorRef(x + 4, y + 2, 4, color);
+  SetLightsByColorRef(x - 6, y + 3, 4, color);    //  START ROW +3
+  SetLightsByColorRef(x + 4, y + 3, 4, color);
+  SetLightsByColorRef(x - 6, y + 4, 4, color);    //  START ROW +4
+  SetLightsByColorRef(x + 4, y + 4, 4, color);
+  SetLightsByColorRef(x - 6, y + 5, 4, color);    //  START ROW +5
+  SetLightsByColorRef(x + 4, y + 5, 4, color);
+  SetLightsByColorRef(x - 6, y + 6, 4, color);    //  START ROW +6
+  SetLightsByColorRef(x + 4, y + 6, 4, color);
+}
+
+void GhostScreen::LetterMoveThrough_BRC(int x = 21, int y = 6, int frameLengthMillis = 60, int animationFrameCount = 90)
+{
+  int frame = FrameAnimation.GetCurrentFrameIndex(frameLengthMillis, animationFrameCount);
+
+  CRGB yellow = CRGB(GetColor(4, 0), GetColor(4, 1), GetColor(4, 2));
+  
+  DrawLetter_B(x - frame, y, yellow);
+  DrawLetter_R(x + 16 - frame, y, yellow);
+  DrawLetter_C(x + 32 - frame, y, yellow);
+}
+
 
 
 //  NOTE: This is a 2D matrix screen animation that plays a diagonal flow of rainbow colors. Do not use this on 1D strip screens.
-void GhostScreen::RainbowFlow2(int hueChangeSpeed = 1, bool berzerk = false, bool nextFrameReady = false)
+void GhostScreen::RainbowFlow2_2D(int hueChangeSpeed = 1, bool berzerk = false)
 {
   static int delayTime = 125;
   
-  if (nextFrameReady)
+  if (FrameAnimation.IterateFrame(50))
   {
     static int rainbowPosition = 0;
     for (int i = 0; i < SCREEN_WIDTH * 2; ++i)
@@ -396,7 +779,5 @@ void GhostScreen::RainbowFlow2(int hueChangeSpeed = 1, bool berzerk = false, boo
     
     if (!berzerk) rainbowPosition += hueChangeSpeed;
     FastLED.show();
-    
-    nextFrameMillis += delayTime;
   }
 }

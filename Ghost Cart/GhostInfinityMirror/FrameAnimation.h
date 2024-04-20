@@ -2,10 +2,11 @@
 
 class FrameAnimationManager {
   public:
-    inline unsigned int GetCurrentFrameIndex(unsigned int animationFrameCount, unsigned long frameLengthMillis) { return ((GetAnimationMillisSoFar() / frameLengthMillis) % animationFrameCount); }
+    inline unsigned int GetCurrentFrameIndex(unsigned long frameLengthMillis, unsigned int animationFrameCount) { return ((GetAnimationMillisSoFar() / frameLengthMillis) % animationFrameCount); }
     
-    inline bool IterateFrame(unsigned int animationFrameCount, unsigned long frameLengthMillis) {
-      unsigned int currentFrame = GetCurrentFrameIndex(animationFrameCount, frameLengthMillis);
+    inline bool IterateFrame(unsigned long frameLengthMillis, unsigned int animationFrameCount = 65535) {
+      unsigned int currentFrame = GetCurrentFrameIndex(frameLengthMillis, animationFrameCount);
+
       if (LastFrameIndex < currentFrame) {
         LastFrameIndex = currentFrame;
         return true;
@@ -33,13 +34,13 @@ class FrameAnimationManager {
 
 
 
-
 //  INTERNAL variables
 unsigned long millisOffset = 0;
-
 //  INTERNAL methods
 inline unsigned long FrameMillis() { return millis() - millisOffset; }
-
+///
+///
+///
 //  EXTERNAL variables
 unsigned long nextFrameMillis = 0;
 
