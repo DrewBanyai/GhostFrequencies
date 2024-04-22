@@ -8,9 +8,9 @@
 #define GHOST_SCREEN_CLOCK_PIN        4         //  The WS2801 string clock pin for the inner ghost screen
 #define OUTER_RING_DATA_PIN           6         //  The WS2801 string data pin for the outer ring lights
 #define OUTER_RING_CLOCK_PIN          8         //  The WS2801 string clock pin for the outer ring lights
+#define NES_CLOCK_PIN                 12        //  The Clock pin for the NES Controller
+#define NES_LATCH_PIN                 11        //  The Latch pin for the NES Controller
 #define NES_DATA_PIN                  10        //  The Data pin for the NES Controller
-#define NES_CLOCK_PIN                 11        //  The Clock pin for the NES Controller
-#define NES_LATCH_PIN                 12        //  The Latch pin for the NES Controller
 
 #define LED_BRIGHTNESS                20         //  The number (0 to 200) for the brightness setting)
 
@@ -54,9 +54,9 @@ void setup()
 
 void loop()
 {
-  //nesController.ReadController();
-  /*if (nesController.CheckButton(NES_A_BUTTON)) */outerRing.SwitchPatterns();
-  /*if (nesController.CheckButton(NES_B_BUTTON)) */ghostScreen.SwitchPatterns();
+  nesController.ReadController();
+  if (nesController.CheckButton(NES_A_BUTTON)) ghostScreen.SwitchPatterns();
+  if (nesController.CheckButton(NES_B_BUTTON)) outerRing.SwitchPatterns();
 
   ghostScreen.Render();
   outerRing.Render();

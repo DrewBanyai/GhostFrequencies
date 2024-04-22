@@ -20,22 +20,17 @@ class LED_Screen {
     inline void SetScreen(CRGB color) { fill_solid(LEDs, LED_COUNT, color); }
     inline void ClearScreen() { SetScreen(CRGB::Black); }
 
-    const int PATTERN_SWITCH_BUTTON_DELAY = 10000;
+    const int PATTERN_SWITCH_BUTTON_DELAY = 400;
     unsigned long PatternSwitchTimer = PATTERN_SWITCH_BUTTON_DELAY;
     int PatternIndex = 0;
 
     inline void SetPatternIndex(int newIndex) { PatternIndex = newIndex; }
     inline bool SwitchPatterns() {
-      if (millis() < PatternSwitchTimer) return false;
-      else {
+      if (millis() >= PatternSwitchTimer) {
         PatternSwitchTimer = millis() + PATTERN_SWITCH_BUTTON_DELAY;
-        Serial.println(ScreenName + ": Iterating to next pattern...");
-
         ClearScreen();
         ++PatternIndex;
         FrameAnimation.ResetAnimation();
-
-        return true;
       }
     }
 
