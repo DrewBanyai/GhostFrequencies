@@ -179,7 +179,7 @@ Thanks to the Ghost Frequencies crew for working with me on this project!
 [license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
 [linkedin-url]: https://www.linkedin.com/in/drewbanyai/
 
-[product-image]: https://github.com/DrewBanyai/GhostFrequencies/GhostInfinityMirror/Documentation/ProjectImage.png
+[product-image]: https://raw.githubusercontent.com/DrewBanyai/GhostFrequencies/main/Ghost%20Cart/GhostInfinityMirror/Documentation/ProjectImage.png
 
 [Arduino]: https://github.com/DrewBanyai/GhostFrequencies/GhostInfinityMirror/Documentation/ArduinoLogoRound.png
 [Arduino-url]: https://https://arduino.cc//
