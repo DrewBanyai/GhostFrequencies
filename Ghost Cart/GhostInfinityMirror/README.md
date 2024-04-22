@@ -166,11 +166,11 @@ Thanks to the Ghost Frequencies crew for working with me on this project!
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/badge/contributors-1-blue
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[forks-shield]: https://img.shields.io/badge/forks-0-purple
+[stars-shield]: https://img.shields.io/badge/stars-0-gold
+[issues-shield]: https://img.shields.io/badge/issues-0-black
+[license-shield]: https://img.shields.io/badge/license-MIT-darkgreen
+[linkedin-shield]: https://img.shields.io/badge/linkedin-0072b1
 
 [contributors-url]: https://github.com/DrewBanyai/GhostFrequencies/graphs/contributors
 [forks-url]: https://github.com/DrewBanyai/GhostFrequencies/network/members
