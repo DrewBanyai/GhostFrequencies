@@ -181,7 +181,7 @@ Thanks to the Ghost Frequencies crew for working with me on this project!
 
 [product-image]: https://raw.githubusercontent.com/DrewBanyai/GhostFrequencies/main/Ghost%20Cart/GhostInfinityMirror/Documentation/ProjectImage.png
 
-[Arduino]: https://github.com/DrewBanyai/GhostFrequencies/GhostInfinityMirror/Documentation/ArduinoLogoRound.png
+[Arduino]: https://raw.githubusercontent.com/DrewBanyai/GhostFrequencies/main/Ghost%20Cart/GhostInfinityMirror/Documentation/ArduinoLogoRound.png
 [Arduino-url]: https://https://arduino.cc//
-[Neopixel]: https://github.com/DrewBanyai/GhostFrequencies/GhostInfinityMirror/Documentation/NeopixelLogo.png
+[Neopixel]: https://raw.githubusercontent.com/DrewBanyai/GhostFrequencies/main/Ghost%20Cart/GhostInfinityMirror/Documentation/NeopixelLogo.png
 [Neopixel-url]: https://www.adafruit.com/category/168
