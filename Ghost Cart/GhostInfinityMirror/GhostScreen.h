@@ -8,7 +8,7 @@ class GhostScreen : public LED_Screen{
     static const unsigned int GHOST_SCREEN_LED_COUNT = 158;
     static const unsigned int VIRTUAL_LEDS_ADDITION = 0;
     CRGB GhostScreenLEDs[GHOST_SCREEN_LED_COUNT];
-    GhostScreen() : LED_Screen(GHOST_SCREEN_LED_COUNT, GhostScreenLEDs, "Ghost Screen") {}
+    GhostScreen() : LED_Screen(GHOST_SCREEN_LED_COUNT, GhostScreenLEDs, "Ghost Screen", 9) {}
 
 
     void Initialize(bool ledChutesLayout) {

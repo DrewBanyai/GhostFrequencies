@@ -28,7 +28,7 @@ class OuterRing : public LED_Screen {
     static const unsigned int OUTER_RING_LED_COUNT = 76;
     static const unsigned int VIRTUAL_LEDS_ADDITION = 10;
     CRGB OuterRingLEDs[OUTER_RING_LED_COUNT];
-    OuterRing() : LED_Screen(OUTER_RING_LED_COUNT, OuterRingLEDs, "Outer Ring") {}
+    OuterRing() : LED_Screen(OUTER_RING_LED_COUNT, OuterRingLEDs, "Outer Ring", 5) {}
 
     const int VIRTUAL_LED_COUNT = LED_COUNT + 10; //  The number of Virtual LEDs to travel (AKA the loop will continue until the position passes this number, causing a delay before restarting)
 

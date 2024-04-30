@@ -5,12 +5,12 @@
 #include "OuterRing.h"
 
 #define GHOST_SCREEN_DATA_PIN         2         //  The WS2801 string data pin for the inner ghost screen
-#define GHOST_SCREEN_CLOCK_PIN        4         //  The WS2801 string clock pin for the inner ghost screen
-#define OUTER_RING_DATA_PIN           6         //  The WS2801 string data pin for the outer ring lights
-#define OUTER_RING_CLOCK_PIN          8         //  The WS2801 string clock pin for the outer ring lights
-#define NES_CLOCK_PIN                 12        //  The Clock pin for the NES Controller
-#define NES_LATCH_PIN                 11        //  The Latch pin for the NES Controller
-#define NES_DATA_PIN                  10        //  The Data pin for the NES Controller
+#define GHOST_SCREEN_CLOCK_PIN        3         //  The WS2801 string clock pin for the inner ghost screen
+#define OUTER_RING_DATA_PIN           5         //  The WS2801 string data pin for the outer ring lights
+#define OUTER_RING_CLOCK_PIN          7        //  The WS2801 string clock pin for the outer ring lights
+#define NES_DATA_PIN                  10         //  The Data pin for the NES Controller
+#define NES_CLOCK_PIN                 11         //  The Clock pin for the NES Controller
+#define NES_LATCH_PIN                 12         //  The Latch pin for the NES Controller
 
 #define LED_BRIGHTNESS                20         //  The number (0 to 200) for the brightness setting)
 
@@ -29,7 +29,7 @@ void SerialProgramInit() {
 void setup()
 {
   //  Initialize the Serial connection for debug output
-  if (TEST_BED_HARDWARE) SerialProgramInit();
+  SerialProgramInit();
   
   //  Seed the random number generator
   randomSeed(analogRead(0));
@@ -46,7 +46,7 @@ void setup()
 
   //  Set all LED brightness, then initialize and clear all strips
   FastLED.setBrightness(LED_BRIGHTNESS);
-  ghostScreen.Initialize(true);
+  ghostScreen.Initialize(TEST_BED_HARDWARE);
   ghostScreen.ClearScreen();
   outerRing.ClearScreen();
   FastLED.show();
@@ -55,8 +55,13 @@ void setup()
 void loop()
 {
   nesController.ReadController();
-  if (nesController.CheckButton(NES_A_BUTTON)) ghostScreen.SwitchPatterns();
-  if (nesController.CheckButton(NES_B_BUTTON)) outerRing.SwitchPatterns();
+  if (nesController.CheckButton(NES_A_BUTTON))
+    if (ghostScreen.SwitchPatterns())
+      Serial.println("Changing Ghost Screen pattern!");
+
+  if (nesController.CheckButton(NES_B_BUTTON))
+    if (outerRing.SwitchPatterns())
+      Serial.println("Changing Outer Ring pattern!"); 
 
   ghostScreen.Render();
   outerRing.Render();

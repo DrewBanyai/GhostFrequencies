@@ -8,12 +8,14 @@ class LED_Screen {
     unsigned int LED_COUNT = 0;
     CRGB* LEDs;
     String ScreenName;
+    int PatternCount;
     FrameAnimationManager FrameAnimation;
 
-    LED_Screen(int ledCount, CRGB* leds, String screenName) {
+    LED_Screen(int ledCount, CRGB* leds, String screenName, int patternCount = 1) {
       LED_COUNT = ledCount;
       LEDs = leds;
       ScreenName = screenName;
+      PatternCount = patternCount;
     }
 
     inline bool IsIndexOnScreen(int index) { return ((index >= 0) && (index < LED_COUNT)); }
@@ -30,8 +32,13 @@ class LED_Screen {
         PatternSwitchTimer = millis() + PATTERN_SWITCH_BUTTON_DELAY;
         ClearScreen();
         ++PatternIndex;
+        if (PatternIndex >= PatternCount) PatternIndex = 0;
+        Serial.print("Switching Pattern to index ");
+        Serial.println(PatternIndex);
         FrameAnimation.ResetAnimation();
+        return true;
       }
+      return false;
     }
 
     // 1D Patterns
