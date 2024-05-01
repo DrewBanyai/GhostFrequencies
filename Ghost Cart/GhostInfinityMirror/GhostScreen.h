@@ -1,6 +1,7 @@
 #include <FastLED.h>
 
 #include "LED_Screen.h"
+#include "Animations_1D.h"
 #include "FrameAnimation.h"
 
 class GhostScreen : public LED_Screen{
@@ -52,10 +53,10 @@ class GhostScreen : public LED_Screen{
     inline void Render() {
       switch (PatternIndex)
       {
-        case 0:   GlowFlow(10, 100);                 break;
-        case 1:   RainbowFlow1(5);   break;
-        case 2:   RainbowFlow2_2D(10, false);       break;
-        case 3:   ColorFire(25);                                                  break;
+        case 0:   Anim1D_GlowFlow((LED_Screen*)this, 2, 1000);                    break;
+        case 1:   Anim1D_RainbowFlow1((LED_Screen*)this, 5);                      break;
+        case 2:   RainbowFlow2_2D(10, false);                                     break;
+        case 3:   Anim1D_ColorFire((LED_Screen*)this, 1, 25);                     break;
         case 4:   ClearScreen(); PacManChompDanceThrough();                       break;
         case 5:   ClearScreen(); PacManChompDanceThroughPlusGhost();              break;
         case 6:   ClearScreen(); MsPacManChompDanceThrough();                     break;

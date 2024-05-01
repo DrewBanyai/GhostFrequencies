@@ -1,6 +1,22 @@
 inline void SetStrip(CRGB* leds, const int ledCount, CRGB color) { fill_solid(leds, ledCount, color); }
 inline void ClearStrip(CRGB* leds, const int ledCount) { SetStrip(leds, ledCount, CRGB::Black); }
 
+inline int GetRandomVibrantColorIndex()
+{
+  switch (random(9))
+  {
+    case 0:   return 1;   break;
+    case 1:   return 2;   break;
+    case 2:   return 3;   break;
+    case 3:   return 4;   break;
+    case 4:   return 5;   break;
+    case 5:   return 6;   break;
+    case 6:   return 7;   break;
+    case 7:   return 48;   break;
+    case 8:   return 49;   break;
+  }
+}
+
 //////////////////////////////
 //  HELPER FUNCTIONS
 //////////////////////////////
@@ -22,15 +38,6 @@ CRGB Wheel(byte wheelPosition)
         return CRGB(wheelPosition * 3, 255 - wheelPosition * 3, 0);
     }
 }
-
-struct Color
-{
-public:
-  int R, G, B;
-  Color(int r, int g, int b) : R(r), G(g), B(b) {}
-  inline bool isZero()                const { return (R == 0 && G == 0 && B == 0);  }
-  inline bool isLessThan(int amount)  const { return (abs(R) < amount && abs(G) < amount && abs(B) < amount);  }
-};
 
 //  The basic colors
 #define COMMON_COLOR_COUNT    61
@@ -99,20 +106,55 @@ const byte COMMON_COLORS[COMMON_COLOR_COUNT][3] =
   {  48, 112, 128 },  //  MechaKoopa Cyan
 };
 
-inline int GetRandomVibrantColorIndex()
-{
-  switch (random(9))
-  {
-    case 0:   return 1;   break;
-    case 1:   return 2;   break;
-    case 2:   return 3;   break;
-    case 3:   return 4;   break;
-    case 4:   return 5;   break;
-    case 5:   return 6;   break;
-    case 6:   return 7;   break;
-    case 7:   return 48;   break;
-    case 8:   return 49;   break;
-  }
+inline byte GetColor(byte colorIndex, int part) { return COMMON_COLORS[colorIndex][part]; }
+
+inline void PrintColor(int r, int g, int b) {
+  Serial.print(r);
+  Serial.print(", ");
+  Serial.print(g);
+  Serial.print(", ");
+  Serial.println(b);
 }
 
-inline byte GetColor(byte colorIndex, int part) { return COMMON_COLORS[colorIndex][part]; }
+struct Color
+{
+public:
+  int R, G, B;
+  int NextR = 0, NextG = 0, NextB = 0;
+  unsigned long lastColorChange = 0;
+  Color(int r, int g, int b) : R(r), G(g), B(b), NextR(r), NextG(g), NextB(b) {}
+
+  inline void SetNextColor(int r, int g, int b) {
+    NextR = r;
+    NextG = g;
+    NextB = b;
+  }
+
+  void ColorShift(const int colorChangeSpeed, const unsigned long changeDelay) {
+    if (R < NextR)        { R = min(255, min(NextR, R + colorChangeSpeed)); }
+    else if (R > NextR)   { R = max(0, max(NextR, R - colorChangeSpeed)); }
+    if (G < NextG)        { G = min(255, min(NextG, G + colorChangeSpeed)); }
+    else if (G > NextG)   { G = max(0, max(NextG, G - colorChangeSpeed)); }
+    if (B < NextB)        { B = min(255, min(NextB, B + colorChangeSpeed)); }
+    else if (B > NextB)   { B = max(0, max(NextB, B - colorChangeSpeed)); }
+
+    Color colorDelta = Color(NextR - R, NextG - G, NextB - B);
+    if (colorDelta.isZero() && (millis() >= (lastColorChange + changeDelay))) {
+      int newColorIndex = 0;
+      do
+      {
+        newColorIndex = GetRandomVibrantColorIndex();
+        colorDelta = Color(int(COMMON_COLORS[newColorIndex][0]) - R, int(COMMON_COLORS[newColorIndex][1]) - G, int(COMMON_COLORS[newColorIndex][2]) - B);
+      } while (colorDelta.isLessThan(colorChangeSpeed));
+
+      NextR = COMMON_COLORS[newColorIndex][0];
+      NextG = COMMON_COLORS[newColorIndex][1];
+      NextB = COMMON_COLORS[newColorIndex][2];
+
+      lastColorChange = millis();
+    }
+  }
+
+  inline bool isZero()                const { return (R == 0 && G == 0 && B == 0);  }
+  inline bool isLessThan(int amount)  const { return (abs(R) < amount && abs(G) < amount && abs(B) < amount);  }
+};

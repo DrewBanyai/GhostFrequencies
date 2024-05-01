@@ -1,6 +1,7 @@
 #include <FastLED.h>
 
 #include "LED_Screen.h"
+#include "Animations_1D.h"
 
 //  The basic colors
 #define OUTER_RING_COLOR_COUNT    15
@@ -35,11 +36,11 @@ class OuterRing : public LED_Screen {
     void Render() {
         switch (PatternIndex)
         {
-          case 0:   GlowFlow();                                               break;
-          case 1:   RainbowFlow1(5);                                          break;
-          case 2:   RainbowFlow2_1D(10, false);                               break;
-          case 3:   Fire(10);                                                 break;
-          case 4:   PacmanChase(VIRTUAL_LED_COUNT);                           break;
+          case 0:   Anim1D_GlowFlow((LED_Screen*)this, 2, 1000);              break;
+          case 1:   Anim1D_RainbowFlow1((LED_Screen*)this, 5);                break;
+          case 2:   Anim1D_RainbowFlow2((LED_Screen*)this, 10, false);        break;
+          case 3:   Anim1D_Fire((LED_Screen*)this, 10);                       break;
+          case 4:   Anim1D_PacmanChase((LED_Screen*)this, VIRTUAL_LED_COUNT); break;
           default:  PatternIndex = 0;                                         break;
         }
     }
