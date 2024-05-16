@@ -5,6 +5,12 @@
 #include "FrameAnimation.h"
 
 class GhostScreen : public LED_Screen{
+  private:
+    static const int SCREEN_WIDTH = 14;
+    static const int SCREEN_HEIGHT = 14;
+    static const int VIRTUAL_LED_COUNT = SCREEN_WIDTH * SCREEN_HEIGHT; //  The number of Virtual LEDs when X,Y positions are translated
+    int ScreenIndexTranslated[VIRTUAL_LED_COUNT];
+
   public:
     static const unsigned int GHOST_SCREEN_LED_COUNT = 158;
     static const unsigned int VIRTUAL_LEDS_ADDITION = 0;
@@ -13,18 +19,12 @@ class GhostScreen : public LED_Screen{
 
 
     void Initialize(bool ledChutesLayout) {
-      Chutes = ledChutesLayout;
+      //  NOTE: Because we translate the screen virtual indices prior to passing them in, we must set the Chutes value here as well before passing it in
+      LED_Screen::SetVirtualScreenSize(SCREEN_WIDTH, SCREEN_HEIGHT, ScreenIndexTranslated, ledChutesLayout);
 
       TranslateScreenVirtualIndices();
+      LED_Screen::SetScreenIndexTranslations(ScreenIndexTranslated);
     }
-
-    inline bool IsPixelBlack(int x, int y) { int index = PositionToIndex(x, y); return (index != -1) ? (LEDs[index].r == 0 && LEDs[index].g == 0 && LEDs[index].b == 0) : false; }
-    inline const CRGB& GetPixel(int x, int y) { return (IsPosOnScreen(x, y)) ? LEDs[PositionToIndex(x, y)] : CRGB::Black; }
-
-    inline void SetLEDByColorRef(int x, int y, const CRGB& color) { if (IsPosOnScreen(x, y) == true) LEDs[PositionToIndex(x, y)] = color; }
-    inline void SetLEDByColor(int x, int y, const CRGB color) { if (IsPosOnScreen(x, y) == true) LEDs[PositionToIndex(x, y)] = color; }
-    inline void SetLEDIndexByColor(int index, CRGB color) { if (IsIndexOnScreen(index) == true) LEDs[index] = color; }
-    inline void SetLightsByColorRef(int x, int y, int count, const CRGB& color) { for (int i = 0; i < count; ++i) SetLEDByColorRef(x + i, y, color); }
 
     //  14x14 Images
     void DrawPacManChomp01(int x, int y, CRGB& color);
@@ -69,16 +69,9 @@ class GhostScreen : public LED_Screen{
       }
     }
 
-    static const int SCREEN_WIDTH = 14;
-    static const int SCREEN_HEIGHT = 14;
-
     void RainbowFlow2_2D(int hueChangeSpeed, bool berzerk);
 
   private:
-    static const int VIRTUAL_LED_COUNT = SCREEN_WIDTH * SCREEN_HEIGHT; //  The number of Virtual LEDs when X,Y positions are translated
-
-    bool Chutes = false;
-
     //  Convert the 158-light ghost screen shape into a string
     //  "_____OOOO_____" + 
     //  "___OOOOOOOO___" + 
@@ -95,12 +88,11 @@ class GhostScreen : public LED_Screen{
     //  "OO_OOO__OOO_OO" + 
     //  "O___OO__OO___O";
     String ScreenShape = "_____OOOO________OOOOOOOO_____OOOOOOOOOO___OOOOOOOOOOOO__OOOOOOOOOOOO__OOOOOOOOOOOO_OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO_OOO__OOO_OOO___OO__OO___O";
-    int ScreenIndexTranslated[VIRTUAL_LED_COUNT];
 
     //  Call this when the screen class is created
     void TranslateScreenVirtualIndices() {
       int emptySpaceCount = 0;
-      for (int i = 0; i < VIRTUAL_LED_COUNT; ++i) {
+      for (int i = 0; i < (SCREEN_WIDTH * SCREEN_HEIGHT); ++i) {
         if (ScreenShape[i] == 'O') {
           ScreenIndexTranslated[VirtualIndexTranslate(i)] = i - emptySpaceCount;
         }
@@ -110,23 +102,7 @@ class GhostScreen : public LED_Screen{
         }
       }
     }
-
-    inline bool IsPosOnScreen(int x, int y) {
-      if (x < 0) return false;
-      if (y < 0) return false;
-      if (x >= SCREEN_WIDTH) return false;
-      if (y >= SCREEN_HEIGHT) return false;
-      return (PositionToIndex(x, y) != -1);
-    }
-
-    inline int PositionToIndex(int x, int y) { int vIndex = (y * SCREEN_WIDTH + x); return (vIndex >= 0 && vIndex <= VIRTUAL_LED_COUNT) ? ScreenIndexTranslated[(y * SCREEN_WIDTH + x)] : -1; }
-    inline bool IsIndexOnScreen(int index) { return (index >= 0 && index < LED_COUNT); }
-    inline bool IsVirtualIndexOnScreen(int vIndex) { return (vIndex >= 0 && vIndex < VIRTUAL_LED_COUNT) ? (ScreenIndexTranslated[vIndex] != -1) : false; }
-
-    //  NOTE: The "Chutes" alternate is for when the LED screen goes left to right on odd rows, but right to left on even rows (like a chute going back and forth)
-    inline int VirtualIndexTranslate(int virtualIndex) { return Chutes ? (((virtualIndex / SCREEN_WIDTH) & 1) ? (((virtualIndex / SCREEN_WIDTH + 1) * SCREEN_WIDTH) - 1 - (virtualIndex % SCREEN_WIDTH)) : virtualIndex) : virtualIndex; }
 };
-
 
 void GhostScreen::PacManChompDanceThrough(int x, int y, int frameLengthMillis, int animationFrameCount, int frame)
 {

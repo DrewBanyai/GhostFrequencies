@@ -7,19 +7,19 @@
 #define OUTER_RING_COLOR_COUNT    15
 const byte OUTER_RING_COLORS[OUTER_RING_COLOR_COUNT][3] = 
 {
-	{ 0, 0, 0 },		//  Black
+	{ 0, 0, 0 },		    //  Black
 	{ 147, 112, 219 },	//  Medium Purple
-	{ 199, 21, 133 },	//  Medium Violet Red
-	{ 255, 20, 147 },	//  Deep Pink
-	{ 255, 0, 0 },		//  Red
-	{ 255, 140, 0 },	//  Dark Orange
-	{ 255, 69, 0 },		//  Orange Red
-	{ 255, 165, 0 },	//  Orange
-	{ 200, 200, 0 },	//  Yellow
+	{ 199, 21, 133 },	  //  Medium Violet Red
+	{ 255, 20, 147 },	  //  Deep Pink
+	{ 255, 0, 0 },		  //  Red
+	{ 255, 140, 0 },	  //  Dark Orange
+	{ 255, 69, 0 },		  //  Orange Red
+	{ 255, 165, 0 },	  //  Orange
+	{ 200, 200, 0 },	  //  Yellow
 	{ 034, 139, 034 },	//  Forest Green
-	{ 0, 250, 154 },	//  Medium Spring Green
+	{ 0, 250, 154 },	  //  Medium Spring Green
 	{ 032, 178, 170 },  //  Light Sea Green
-	{ 0, 100, 0 },  	//  Dark Green
+	{ 0, 100, 0 },  	  //  Dark Green
 	{ 0, 255, 255 },  	//  Cyan
 	{ 070, 130, 180 },  //  Steel Blue
 };
@@ -29,19 +29,22 @@ class OuterRing : public LED_Screen {
     static const unsigned int OUTER_RING_LED_COUNT = 76;
     static const unsigned int VIRTUAL_LEDS_ADDITION = 10;
     CRGB OuterRingLEDs[OUTER_RING_LED_COUNT];
-    OuterRing() : LED_Screen(OUTER_RING_LED_COUNT, OuterRingLEDs, "Outer Ring", 5) {}
+    OuterRing() : LED_Screen(OUTER_RING_LED_COUNT, OuterRingLEDs, "Outer Ring", 8) {}
 
     const int VIRTUAL_LED_COUNT = LED_COUNT + 10; //  The number of Virtual LEDs to travel (AKA the loop will continue until the position passes this number, causing a delay before restarting)
 
     void Render() {
         switch (PatternIndex)
         {
-          case 0:   Anim1D_GlowFlow((LED_Screen*)this, 2, 1000);              break;
-          case 1:   Anim1D_RainbowFlow1((LED_Screen*)this, 5);                break;
-          case 2:   Anim1D_RainbowFlow2((LED_Screen*)this, 10, false);        break;
-          case 3:   Anim1D_Fire((LED_Screen*)this, 10);                       break;
-          case 4:   Anim1D_PacmanChase((LED_Screen*)this, VIRTUAL_LED_COUNT); break;
-          default:  PatternIndex = 0;                                         break;
+          case 0:   Anim1D_GlowFlow((LED_Screen*)this, 2, 1000);                break;
+          case 1:   Anim1D_RainbowFlow1((LED_Screen*)this, 5);                  break;
+          case 2:   Anim1D_RainbowFlow2((LED_Screen*)this, 10, false);          break;
+          case 3:   Anim1D_Fire((LED_Screen*)this, 10);                         break;
+          case 4:   Anim1D_ColorFire((LED_Screen*)this, 1, 25);                    break;
+          case 5:   Anim1D_PacmanChase((LED_Screen*)this, VIRTUAL_LED_COUNT);   break;
+          case 6:   Anim1D_MsPacmanRedWhite((LED_Screen*)this);                 break;
+          case 7:   Anim1D_VegasMarquee((LED_Screen*)this);                     break;
+          default:  PatternIndex = 0;                                           break;
         }
     }
 
@@ -93,46 +96,6 @@ class OuterRing : public LED_Screen {
       ClearScreen();
       SetGroupColor(group, CRGB::Red);
       FastLED.show();
-    }
-
-    void MsPacmanRedWhite(unsigned int frameLength = 25)
-    {
-      static int whitePosition = 0;
-      static const int redToWhiteRatio = 6;
-      static const int slowdown = 3;
-      
-      ClearScreen();
-      
-      for (int i = 0; i < LED_COUNT; i++)
-      {
-        LEDs[i] = ((((whitePosition / slowdown) + i) % (redToWhiteRatio + 1)) == 0) ? CRGB::White : CRGB::Red;
-      }
-      
-      FastLED.show();
-      whitePosition += 1;
-      if (whitePosition == ((redToWhiteRatio + 1) * slowdown)) whitePosition = 0;
-      
-      delay(frameLength);
-    }
-
-    void VegasMarquee(unsigned int frameLength = 25)
-    {
-      static int redPosition = 0;
-      const int blankToRedRatio = 1;
-      static const int slowdown = 5;
-      
-      ClearScreen();
-      
-      for (int i = 0; i < LED_COUNT; i++)
-      {
-        LEDs[i] = ((((redPosition / slowdown) + i) % (blankToRedRatio + 1)) == 0) ? CRGB::Red : CRGB::Black;
-      }
-      
-      FastLED.show();
-      redPosition += 1;
-      if (redPosition == ((blankToRedRatio + 1) * slowdown)) redPosition = 0;
-      
-      delay(frameLength);
     }
 
     void FireworksSetup()
