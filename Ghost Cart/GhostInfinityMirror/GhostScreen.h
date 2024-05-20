@@ -16,7 +16,7 @@ class GhostScreen : public LED_Screen{
     static const unsigned int GHOST_SCREEN_LED_COUNT = 158;
     static const unsigned int VIRTUAL_LEDS_ADDITION = 0;
     CRGB GhostScreenLEDs[GHOST_SCREEN_LED_COUNT];
-    GhostScreen() : LED_Screen(GHOST_SCREEN_LED_COUNT, GhostScreenLEDs, "Ghost Screen", 9) {}
+    GhostScreen() : LED_Screen(GHOST_SCREEN_LED_COUNT, GhostScreenLEDs, "Ghost Screen", 10) {}
 
 
     void Initialize(bool ledChutesLayout) {
@@ -39,6 +39,7 @@ class GhostScreen : public LED_Screen{
         case 6:   ClearScreen(); Anim2D_MsPacManChompDanceThrough((LED_Screen*)this);                     break;
         case 7:   ClearScreen(); Anim2D_SpaceInvaderDanceThrough((LED_Screen*)this);                      break;
         case 8:   ClearScreen(); Anim2D_LetterMoveThrough_BRC((LED_Screen*)this);                         break;
+        case 9:   ClearScreen(); Anim2D_SimpleFlame((LED_Screen*)this);                         break;
         //case 9:   ClearScreen(); MegaManRunThrough();                             break;
         //case 10:  ClearScreen(); MarioWarpThrough();                              break;
         //case 11:  ClearScreen(); Tetris();                                        break;

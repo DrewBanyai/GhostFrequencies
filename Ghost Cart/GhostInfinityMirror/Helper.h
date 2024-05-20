@@ -40,7 +40,7 @@ CRGB Wheel(byte wheelPosition)
 }
 
 //  The basic colors
-#define COMMON_COLOR_COUNT    61
+#define COMMON_COLOR_COUNT    62
 const byte COMMON_COLORS[COMMON_COLOR_COUNT][3] = 
 {
   {   0,   0,   0 },  //  Black
@@ -104,6 +104,7 @@ const byte COMMON_COLORS[COMMON_COLOR_COUNT][3] =
   {   0, 184,   0 },  //  MechaKoopa Green 2
   {   0, 248,   0 },  //  MechaKoopa Green 3
   {  48, 112, 128 },  //  MechaKoopa Cyan
+  { 160, 160, 255 },  //  Blue-White (fire center)
 };
 
 inline byte GetColor(byte colorIndex, int part) { return COMMON_COLORS[colorIndex][part]; }

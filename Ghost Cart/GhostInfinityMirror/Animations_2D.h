@@ -32,7 +32,6 @@ void Anim2D_RainbowFlow2(LED_Screen* screen, const int colorChangeSpeed = 1, boo
 }
 
 
-
 void Anim2D_PacManChompDanceThrough(LED_Screen* screen, int x = -6, int y = 7, int frameLengthMillis = 150, int animationFrameCount = 46, int frame = 255)
 {
   if (frame == 255) frame = screen->FrameAnimation.GetCurrentFrameIndex(frameLengthMillis, animationFrameCount);
@@ -64,6 +63,7 @@ void Anim2D_PacManGhostDanceThrough(LED_Screen* screen, int x = 6, int y = 14, i
   else if (frame % 4 == 3)  Image2D_PacManGhostWalk02(screen, frame + x, y, bodyColor, eyeWhiteColor, eyeBallColor);
 }
 
+
 void Anim2D_PacManChompDanceThroughPlusGhost(LED_Screen* screen, int frameLengthMillis = 100, int animationFrameCount = 140, int frame = 255)
 {
   if (frame == 255) frame = screen->FrameAnimation.GetCurrentFrameIndex(frameLengthMillis, animationFrameCount);
@@ -74,6 +74,7 @@ void Anim2D_PacManChompDanceThroughPlusGhost(LED_Screen* screen, int frameLength
   Anim2D_PacManGhostDanceThrough(screen, -66, 7, frameLengthMillis, 52, 7, 0, animationFrameCount, frame);
   Anim2D_PacManGhostDanceThrough(screen, -86, 7, frameLengthMillis, 53, 7, 0, animationFrameCount, frame);
 }
+
 
 void Anim2D_MsPacManChompDanceThrough(LED_Screen* screen, int frameLengthMillis = 100, int animationFrameCount = 48, int frame = 255)
 {
@@ -115,4 +116,25 @@ void Anim2D_LetterMoveThrough_BRC(LED_Screen* screen, int x = 21, int y = 6, int
   Image2D_Letter_B(screen, x - frame, y, yellow);
   Image2D_Letter_R(screen, x + 16 - frame, y, yellow);
   Image2D_Letter_C(screen, x + 32 - frame, y, yellow);
+}
+
+
+void Anim2D_SimpleFlame(LED_Screen* screen, int x = 7, int y = 6, int frameLengthMillis = 140, int animationFrameCount = 8)
+{
+  int frame = screen->FrameAnimation.GetCurrentFrameIndex(frameLengthMillis, animationFrameCount);
+
+  CRGB flameColor1 = CRGB(GetColor(55, 0), GetColor(55, 1), GetColor(55, 2));
+  CRGB flameColor2 = CRGB(GetColor(4, 0), GetColor(4, 1), GetColor(4, 2));
+  CRGB flameColor3 = CRGB(GetColor(61, 0), GetColor(61, 1), GetColor(61, 2));
+  
+  switch (frame) {
+    case 0: Image2D_SimpleFlame01(screen, x, y, flameColor1, flameColor2, flameColor3);   break;
+    case 1: Image2D_SimpleFlame02(screen, x, y, flameColor1, flameColor2, flameColor3);   break;
+    case 2: Image2D_SimpleFlame03(screen, x, y, flameColor1, flameColor2, flameColor3);   break;
+    case 3: Image2D_SimpleFlame04(screen, x, y, flameColor1, flameColor2, flameColor3);   break;
+    case 4: Image2D_SimpleFlame05(screen, x, y, flameColor1, flameColor2, flameColor3);   break;
+    case 5: Image2D_SimpleFlame06(screen, x, y, flameColor1, flameColor2, flameColor3);   break;
+    case 6: Image2D_SimpleFlame07(screen, x, y, flameColor1, flameColor2, flameColor3);   break;
+    case 7: Image2D_SimpleFlame08(screen, x, y, flameColor1, flameColor2, flameColor3);   break;
+  }
 }

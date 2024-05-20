@@ -549,3 +549,377 @@ void Image2D_Letter_R(LED_Screen* screen, int x, int y, CRGB& color)
   screen->SetLightsByColorRef(x - 6, y + 6, 4, color);    //  START ROW +6
   screen->SetLightsByColorRef(x + 4, y + 6, 4, color);
 }
+
+void Image2D_SimpleFlame01(LED_Screen* screen, int x, int y, CRGB& flameColor1, CRGB& flameColor2, CRGB& flameColor3)
+{
+  screen->SetLightsByColorRef(x + 0, y - 5, 1, flameColor1);   //  START ROW -5
+  screen->SetLightsByColorRef(x - 1, y - 3, 1, flameColor1);   //  START ROW -3
+  screen->SetLightsByColorRef(x - 2, y - 2, 1, flameColor1);   //  START ROW -2
+  screen->SetLightsByColorRef(x - 1, y - 2, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 0, y - 2, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 2, y - 1, 1, flameColor1);   //  START ROW -1
+  screen->SetLightsByColorRef(x - 1, y - 1, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y - 1, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 3, y + 0, 1, flameColor1);   //  START ROW +0
+  screen->SetLightsByColorRef(x - 2, y + 0, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y + 0, 1, flameColor3);
+  screen->SetLightsByColorRef(x + 2, y + 0, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 2, y + 1, 1, flameColor1);   //  START ROW +1
+  screen->SetLightsByColorRef(x - 2, y + 1, 4, flameColor2);
+  screen->SetLightsByColorRef(x + 2, y + 1, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 2, 1, flameColor1);   //  START ROW +2
+  screen->SetLightsByColorRef(x - 3, y + 2, 2, flameColor2);
+  screen->SetLightsByColorRef(x - 1, y + 2, 1, flameColor3);
+  screen->SetLightsByColorRef(x + 0, y + 2, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 2, y + 2, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 3, 1, flameColor1);   //  START ROW +3
+  screen->SetLightsByColorRef(x - 4, y + 3, 2, flameColor2);
+  screen->SetLightsByColorRef(x - 2, y + 3, 2, flameColor3);
+  screen->SetLightsByColorRef(x + 0, y + 3, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 2, y + 3, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 4, 1, flameColor1);   //  START ROW +4
+  screen->SetLightsByColorRef(x - 3, y + 4, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 2, y + 4, 2, flameColor3);
+  screen->SetLightsByColorRef(x + 0, y + 4, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y + 4, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 5, 1, flameColor1);   //  START ROW +5
+  screen->SetLightsByColorRef(x - 4, y + 5, 2, flameColor2);
+  screen->SetLightsByColorRef(x - 2, y + 5, 3, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 5, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 2, y + 5, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 6, 1, flameColor1);   //  START ROW +6
+  screen->SetLightsByColorRef(x - 4, y + 6, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 3, y + 6, 4, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 6, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 6, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 7, 1, flameColor1);   //  START ROW +7
+  screen->SetLightsByColorRef(x - 4, y + 7, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 3, y + 7, 4, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 7, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 7, 1, flameColor1);
+}
+
+void Image2D_SimpleFlame02(LED_Screen* screen, int x, int y, CRGB& flameColor1, CRGB& flameColor2, CRGB& flameColor3)
+{
+  screen->SetLightsByColorRef(x - 1, y - 3, 1, flameColor1);   //  START ROW -3
+  screen->SetLightsByColorRef(x - 1, y - 2, 2, flameColor1);   //  START ROW -2
+  screen->SetLightsByColorRef(x - 2, y - 1, 1, flameColor1);   //  START ROW -1
+  screen->SetLightsByColorRef(x - 1, y - 1, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 0, y - 1, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 3, y + 0, 1, flameColor1);   //  START ROW +0
+  screen->SetLightsByColorRef(x - 2, y + 0, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y + 0, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 1, 1, flameColor1);   //  START ROW +1
+  screen->SetLightsByColorRef(x - 3, y + 1, 4, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y + 1, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 2, 1, flameColor1);   //  START ROW +2
+  screen->SetLightsByColorRef(x - 4, y + 2, 2, flameColor2);
+  screen->SetLightsByColorRef(x - 2, y + 2, 1, flameColor3);
+  screen->SetLightsByColorRef(x - 1, y + 2, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 2, y + 2, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 3, 1, flameColor1);   //  START ROW +3
+  screen->SetLightsByColorRef(x - 3, y + 3, 2, flameColor2);
+  screen->SetLightsByColorRef(x - 1, y + 3, 1, flameColor3);
+  screen->SetLightsByColorRef(x + 0, y + 3, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y + 3, 2, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 4, 1, flameColor1);   //  START ROW +4
+  screen->SetLightsByColorRef(x - 3, y + 4, 2, flameColor2);
+  screen->SetLightsByColorRef(x - 1, y + 4, 2, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 4, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 4, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 5, 1, flameColor1);   //  START ROW +5
+  screen->SetLightsByColorRef(x - 4, y + 5, 2, flameColor2);
+  screen->SetLightsByColorRef(x - 2, y + 5, 3, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 5, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 4, y + 5, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 6, 1, flameColor1);   //  START ROW +6
+  screen->SetLightsByColorRef(x - 3, y + 6, 5, flameColor3);
+  screen->SetLightsByColorRef(x + 2, y + 6, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 4, y + 6, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 7, 1, flameColor1);   //  START ROW +7
+  screen->SetLightsByColorRef(x - 3, y + 7, 5, flameColor3);
+  screen->SetLightsByColorRef(x + 2, y + 7, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 4, y + 7, 1, flameColor1);
+}
+
+void Image2D_SimpleFlame03(LED_Screen* screen, int x, int y, CRGB& flameColor1, CRGB& flameColor2, CRGB& flameColor3)
+{
+  screen->SetLightsByColorRef(x - 2, y - 2, 2, flameColor1);   //  START ROW -2
+  screen->SetLightsByColorRef(x - 3, y - 1, 1, flameColor1);   //  START ROW -1
+  screen->SetLightsByColorRef(x - 2, y - 1, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 0, y - 1, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 0, 1, flameColor1);   //  START ROW +0
+  screen->SetLightsByColorRef(x - 3, y + 0, 4, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y + 0, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 1, 1, flameColor1);   //  START ROW +1
+  screen->SetLightsByColorRef(x - 4, y + 1, 2, flameColor2);
+  screen->SetLightsByColorRef(x - 2, y + 1, 1, flameColor3);
+  screen->SetLightsByColorRef(x - 1, y + 1, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 2, y + 1, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 2, 1, flameColor1);   //  START ROW +2
+  screen->SetLightsByColorRef(x - 3, y + 2, 4, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y + 2, 2, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 3, 1, flameColor1);   //  START ROW +3
+  screen->SetLightsByColorRef(x - 3, y + 3, 2, flameColor2);
+  screen->SetLightsByColorRef(x - 1, y + 3, 1, flameColor3);
+  screen->SetLightsByColorRef(x + 0, y + 3, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 3, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 4, 1, flameColor1);   //  START ROW +4
+  screen->SetLightsByColorRef(x - 4, y + 4, 2, flameColor2);
+  screen->SetLightsByColorRef(x - 2, y + 4, 3, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 4, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 4, y + 4, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 5, 1, flameColor1);   //  START ROW +5
+  screen->SetLightsByColorRef(x - 3, y + 5, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 2, y + 5, 3, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 5, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 4, y + 5, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 6, 1, flameColor1);   //  START ROW +6
+  screen->SetLightsByColorRef(x - 3, y + 6, 5, flameColor3);
+  screen->SetLightsByColorRef(x + 2, y + 6, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 6, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 7, 1, flameColor1);   //  START ROW +7
+  screen->SetLightsByColorRef(x - 3, y + 7, 5, flameColor3);
+  screen->SetLightsByColorRef(x + 2, y + 7, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 7, 1, flameColor1);
+}
+
+void Image2D_SimpleFlame04(LED_Screen* screen, int x, int y, CRGB& flameColor1, CRGB& flameColor2, CRGB& flameColor3)
+{
+  screen->SetLightsByColorRef(x - 3, y - 3, 1, flameColor1);   //  START ROW -3
+  screen->SetLightsByColorRef(x - 4, y - 2, 1, flameColor1);   //  START ROW -2
+  screen->SetLightsByColorRef(x - 3, y - 2, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 2, y - 2, 2, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y - 1, 1, flameColor1);   //  START ROW -1
+  screen->SetLightsByColorRef(x - 3, y - 1, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 0, y - 1, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 0, 1, flameColor1);   //  START ROW +0
+  screen->SetLightsByColorRef(x - 3, y + 0, 1, flameColor3);
+  screen->SetLightsByColorRef(x - 2, y + 0, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y + 0, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 1, 1, flameColor1);   //  START ROW +1
+  screen->SetLightsByColorRef(x - 4, y + 1, 4, flameColor2);
+  screen->SetLightsByColorRef(x + 0, y + 1, 2, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 2, 1, flameColor1);   //  START ROW +2
+  screen->SetLightsByColorRef(x - 4, y + 2, 3, flameColor2);
+  screen->SetLightsByColorRef(x - 1, y + 2, 1, flameColor3);
+  screen->SetLightsByColorRef(x + 0, y + 2, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 2, y + 2, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 6, y + 3, 1, flameColor1);   //  START ROW +3
+  screen->SetLightsByColorRef(x - 5, y + 3, 3, flameColor2);
+  screen->SetLightsByColorRef(x - 2, y + 3, 3, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 3, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 3, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 4, 1, flameColor1);   //  START ROW +4
+  screen->SetLightsByColorRef(x - 4, y + 4, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 3, y + 4, 4, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 4, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 2, y + 4, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 5, 1, flameColor1);   //  START ROW +5
+  screen->SetLightsByColorRef(x - 3, y + 5, 4, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 5, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 2, y + 5, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 6, 1, flameColor1);   //  START ROW +6
+  screen->SetLightsByColorRef(x - 4, y + 6, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 3, y + 6, 5, flameColor3);
+  screen->SetLightsByColorRef(x + 2, y + 6, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 7, 1, flameColor1);   //  START ROW +7
+  screen->SetLightsByColorRef(x - 4, y + 7, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 3, y + 7, 5, flameColor3);
+  screen->SetLightsByColorRef(x + 2, y + 7, 1, flameColor1);
+}
+
+void Image2D_SimpleFlame05(LED_Screen* screen, int x, int y, CRGB& flameColor1, CRGB& flameColor2, CRGB& flameColor3)
+{
+  screen->SetLightsByColorRef(x - 1, y - 2, 3, flameColor1);   //  START ROW -2
+  screen->SetLightsByColorRef(x - 3, y - 1, 2, flameColor1);   //  START ROW -1
+  screen->SetLightsByColorRef(x - 1, y - 1, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 2, y - 1, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 0, 1, flameColor1);   //  START ROW +0
+  screen->SetLightsByColorRef(x - 3, y + 0, 4, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y + 0, 2, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 1, 1, flameColor1);   //  START ROW +1
+  screen->SetLightsByColorRef(x - 4, y + 1, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 3, y + 1, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 2, y + 1, 5, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 1, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 2, 1, flameColor1);   //  START ROW +2
+  screen->SetLightsByColorRef(x - 3, y + 2, 6, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 2, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 3, 1, flameColor1);   //  START ROW +3
+  screen->SetLightsByColorRef(x - 3, y + 3, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 0, y + 3, 1, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 3, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 4, y + 3, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 3, y + 4, 1, flameColor1);   //  START ROW +4
+  screen->SetLightsByColorRef(x - 2, y + 4, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 1, y + 4, 3, flameColor3);
+  screen->SetLightsByColorRef(x + 2, y + 4, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 4, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 5, 1, flameColor1);   //  START ROW +5
+  screen->SetLightsByColorRef(x - 3, y + 5, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 2, y + 5, 4, flameColor3);
+  screen->SetLightsByColorRef(x + 2, y + 5, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 5, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 6, 1, flameColor1);   //  START ROW +6
+  screen->SetLightsByColorRef(x - 4, y + 6, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 3, y + 6, 6, flameColor3);
+  screen->SetLightsByColorRef(x + 3, y + 6, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 4, y + 6, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 7, 1, flameColor1);   //  START ROW +7
+  screen->SetLightsByColorRef(x - 4, y + 7, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 3, y + 7, 6, flameColor3);
+  screen->SetLightsByColorRef(x + 3, y + 7, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 4, y + 7, 1, flameColor1);
+}
+
+void Image2D_SimpleFlame06(LED_Screen* screen, int x, int y, CRGB& flameColor1, CRGB& flameColor2, CRGB& flameColor3)
+{
+  screen->SetLightsByColorRef(x + 0, y - 3, 1, flameColor1);   //  START ROW -3
+  screen->SetLightsByColorRef(x - 1, y - 2, 1, flameColor1);   //  START ROW -2
+  screen->SetLightsByColorRef(x + 0, y - 2, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y - 2, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y - 1, 1, flameColor1);   //  START ROW -1
+  screen->SetLightsByColorRef(x - 2, y - 1, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 1, y - 1, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y - 1, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 0, 1, flameColor1);   //  START ROW +0
+  screen->SetLightsByColorRef(x - 4, y + 0, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 3, y + 0, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 2, y + 0, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y + 0, 1, flameColor1);
+  screen->SetLightsByColorRef(x + 3, y + 0, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 1, 1, flameColor1);   //  START ROW +1
+  screen->SetLightsByColorRef(x - 3, y + 1, 5, flameColor2);
+  screen->SetLightsByColorRef(x + 2, y + 1, 1, flameColor1);
+  screen->SetLightsByColorRef(x + 3, y + 1, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 4, y + 1, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 3, y + 2, 1, flameColor1);   //  START ROW +2
+  screen->SetLightsByColorRef(x - 2, y + 2, 5, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 2, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 3, y + 3, 1, flameColor1);   //  START ROW +3
+  screen->SetLightsByColorRef(x - 2, y + 3, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 0, y + 3, 2, flameColor3);
+  screen->SetLightsByColorRef(x + 2, y + 3, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 3, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 4, 1, flameColor1);   //  START ROW +4
+  screen->SetLightsByColorRef(x - 3, y + 4, 2, flameColor2);
+  screen->SetLightsByColorRef(x - 1, y + 4, 2, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 4, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 2, y + 4, 2, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 5, 1, flameColor1);   //  START ROW +5
+  screen->SetLightsByColorRef(x - 4, y + 5, 2, flameColor2);
+  screen->SetLightsByColorRef(x - 2, y + 5, 4, flameColor3);
+  screen->SetLightsByColorRef(x + 2, y + 5, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 4, y + 5, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 6, 1, flameColor1);   //  START ROW +6
+  screen->SetLightsByColorRef(x - 4, y + 6, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 3, y + 6, 5, flameColor3);
+  screen->SetLightsByColorRef(x + 2, y + 6, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 6, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 7, 1, flameColor1);   //  START ROW +7
+  screen->SetLightsByColorRef(x - 4, y + 7, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 3, y + 7, 5, flameColor3);
+  screen->SetLightsByColorRef(x + 2, y + 7, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 7, 1, flameColor1);
+}
+
+void Image2D_SimpleFlame07(LED_Screen* screen, int x, int y, CRGB& flameColor1, CRGB& flameColor2, CRGB& flameColor3)
+{
+  screen->SetLightsByColorRef(x + 0, y - 4, 1, flameColor1);   //  START ROW -4
+  screen->SetLightsByColorRef(x - 1, y - 3, 1, flameColor1);   //  START ROW -3
+  screen->SetLightsByColorRef(x + 0, y - 3, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y - 3, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y - 2, 1, flameColor1);   //  START ROW -2
+  screen->SetLightsByColorRef(x + 0, y - 2, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y - 1, 5, flameColor1);   //  START ROW -1
+  screen->SetLightsByColorRef(x + 0, y - 1, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y - 1, 1, flameColor1);
+  screen->SetLightsByColorRef(x + 3, y - 1, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 0, 2, flameColor1);   //  START ROW +0
+  screen->SetLightsByColorRef(x - 2, y + 0, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y + 0, 2, flameColor1);
+  screen->SetLightsByColorRef(x + 3, y + 0, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 4, y + 0, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 2, y + 1, 1, flameColor1);   //  START ROW +1
+  screen->SetLightsByColorRef(x - 1, y + 1, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y + 1, 3, flameColor1);
+  screen->SetLightsByColorRef(x - 3, y + 2, 1, flameColor1);   //  START ROW +2
+  screen->SetLightsByColorRef(x - 2, y + 2, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y + 2, 1, flameColor3);
+  screen->SetLightsByColorRef(x + 2, y + 2, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 2, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 4, y + 3, 1, flameColor1);   //  START ROW +3
+  screen->SetLightsByColorRef(x - 3, y + 3, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 0, y + 3, 1, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 3, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 2, y + 3, 2, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 4, 1, flameColor1);   //  START ROW +4
+  screen->SetLightsByColorRef(x - 4, y + 4, 3, flameColor2);
+  screen->SetLightsByColorRef(x - 1, y + 4, 2, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 4, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 4, y + 4, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 5, 1, flameColor1);   //  START ROW +5
+  screen->SetLightsByColorRef(x - 4, y + 5, 2, flameColor2);
+  screen->SetLightsByColorRef(x - 2, y + 5, 3, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 5, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 5, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 6, 1, flameColor1);   //  START ROW +6
+  screen->SetLightsByColorRef(x - 3, y + 6, 5, flameColor3);
+  screen->SetLightsByColorRef(x + 2, y + 6, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 7, 1, flameColor1);   //  START ROW +7
+  screen->SetLightsByColorRef(x - 3, y + 7, 5, flameColor3);
+  screen->SetLightsByColorRef(x + 2, y + 7, 1, flameColor1);
+}
+
+void Image2D_SimpleFlame08(LED_Screen* screen, int x, int y, CRGB& flameColor1, CRGB& flameColor2, CRGB& flameColor3)
+{
+  screen->SetLightsByColorRef(x + 0, y - 5, 1, flameColor1);   //  START ROW -5
+  screen->SetLightsByColorRef(x - 1, y - 4, 3, flameColor1);   //  START ROW -4
+  screen->SetLightsByColorRef(x + 0, y - 3, 1, flameColor1);   //  START ROW -3
+  screen->SetLightsByColorRef(x - 4, y - 2, 1, flameColor1);   //  START ROW -2
+  screen->SetLightsByColorRef(x - 1, y - 2, 1, flameColor1);
+  screen->SetLightsByColorRef(x + 0, y - 2, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y - 2, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 2, y - 1, 1, flameColor1);   //  START ROW -1
+  screen->SetLightsByColorRef(x - 1, y - 1, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y - 1, 1, flameColor1);
+  screen->SetLightsByColorRef(x + 3, y - 1, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 2, y + 0, 1, flameColor1);   //  START ROW +0
+  screen->SetLightsByColorRef(x - 1, y + 0, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 2, y + 0, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 3, y + 1, 1, flameColor1);   //  START ROW +1
+  screen->SetLightsByColorRef(x - 2, y + 1, 3, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y + 1, 1, flameColor3);
+  screen->SetLightsByColorRef(x + 2, y + 1, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 2, 1, flameColor1);   //  START ROW +2
+  screen->SetLightsByColorRef(x - 3, y + 2, 2, flameColor2);
+  screen->SetLightsByColorRef(x - 1, y + 2, 1, flameColor3);
+  screen->SetLightsByColorRef(x + 0, y + 2, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 1, y + 2, 2, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 3, 1, flameColor1);   //  START ROW +3
+  screen->SetLightsByColorRef(x - 4, y + 3, 3, flameColor2);
+  screen->SetLightsByColorRef(x - 1, y + 3, 2, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 3, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 3, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 4, 1, flameColor1);   //  START ROW +4
+  screen->SetLightsByColorRef(x - 4, y + 4, 2, flameColor2);
+  screen->SetLightsByColorRef(x - 2, y + 4, 3, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 4, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 4, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 4, y + 5, 1, flameColor1);   //  START ROW +5
+  screen->SetLightsByColorRef(x - 3, y + 5, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 2, y + 5, 3, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 5, 1, flameColor2);
+  screen->SetLightsByColorRef(x + 2, y + 5, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 6, 1, flameColor1);   //  START ROW +6
+  screen->SetLightsByColorRef(x - 4, y + 6, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 3, y + 6, 4, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 6, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 6, 1, flameColor1);
+  screen->SetLightsByColorRef(x - 5, y + 7, 1, flameColor1);   //  START ROW +7
+  screen->SetLightsByColorRef(x - 4, y + 7, 1, flameColor2);
+  screen->SetLightsByColorRef(x - 3, y + 7, 4, flameColor3);
+  screen->SetLightsByColorRef(x + 1, y + 7, 2, flameColor2);
+  screen->SetLightsByColorRef(x + 3, y + 7, 1, flameColor1);
+}
