@@ -40,7 +40,7 @@ class OuterRing : public LED_Screen {
           case 1:   Anim1D_RainbowFlow1((LED_Screen*)this, 5);                  break;
           case 2:   Anim1D_RainbowFlow2((LED_Screen*)this, 10, false);          break;
           case 3:   Anim1D_Fire((LED_Screen*)this, 10);                         break;
-          case 4:   Anim1D_ColorFire((LED_Screen*)this, 1, 25);                    break;
+          case 4:   Anim1D_ColorFire((LED_Screen*)this, 1, 25);                 break;
           case 5:   Anim1D_PacmanChase((LED_Screen*)this, VIRTUAL_LED_COUNT);   break;
           case 6:   Anim1D_MsPacmanRedWhite((LED_Screen*)this);                 break;
           case 7:   Anim1D_VegasMarquee((LED_Screen*)this);                     break;
