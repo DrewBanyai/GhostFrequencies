@@ -49,7 +49,7 @@ void Anim2D_PacManChompDanceThrough(LED_Screen* screen, int x = -6, int y = 7, i
 }
 
 
-void Anim2D_PacManGhostDanceThrough(LED_Screen* screen, int x = 6, int y = 14, int frameLengthMillis = 48, int body = 50, int eyeWhite = 7, int eyeBall = 0, int animationFrameCount = 100, int frame = 255)
+void Anim2D_PacManGhostDanceThrough(LED_Screen* screen, int x = 6, int y = 7, int frameLengthMillis = 48, int body = 50, int eyeWhite = 7, int eyeBall = 0, int animationFrameCount = 100, int frame = 255)
 {
   if (frame == 255) frame = screen->FrameAnimation.GetCurrentFrameIndex(frameLengthMillis, animationFrameCount);
 
@@ -137,4 +137,13 @@ void Anim2D_SimpleFlame(LED_Screen* screen, int x = 7, int y = 6, int frameLengt
     case 6: Image2D_SimpleFlame07(screen, x, y, flameColor1, flameColor2, flameColor3);   break;
     case 7: Image2D_SimpleFlame08(screen, x, y, flameColor1, flameColor2, flameColor3);   break;
   }
+}
+
+
+void Anim2D_PacManGhostEyesOnly(LED_Screen* screen, int x = 6, int y = 7, int frameLengthMillis = 48, int eyeWhite = 7, int eyeBall = 0)
+{
+  CRGB eyeWhiteColor = CRGB(GetColor(eyeWhite, 0), GetColor(eyeWhite, 1), GetColor(eyeWhite, 2));
+  CRGB eyeBallColor = CRGB(GetColor(eyeBall, 0), GetColor(eyeBall, 1), GetColor(eyeBall, 2));
+  
+  Image2D_PacManGhostEyes(screen, x, y, eyeWhiteColor, eyeBallColor);
 }

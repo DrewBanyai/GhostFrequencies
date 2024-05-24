@@ -16,7 +16,7 @@ class GhostScreen : public LED_Screen{
     static const unsigned int GHOST_SCREEN_LED_COUNT = 158;
     static const unsigned int VIRTUAL_LEDS_ADDITION = 0;
     CRGB GhostScreenLEDs[GHOST_SCREEN_LED_COUNT];
-    GhostScreen() : LED_Screen(GHOST_SCREEN_LED_COUNT, GhostScreenLEDs, "Ghost Screen", 10) {}
+    GhostScreen() : LED_Screen(GHOST_SCREEN_LED_COUNT, GhostScreenLEDs, "Ghost Screen", 11) {}
 
 
     void Initialize(bool ledChutesLayout) {
@@ -30,19 +30,17 @@ class GhostScreen : public LED_Screen{
     inline void Render() {
       switch (PatternIndex)
       {
-        case 0:   Anim1D_GlowFlow((LED_Screen*)this, 2, 1000);                    break;
-        case 1:   Anim1D_RainbowFlow1((LED_Screen*)this, 5);                      break;
-        case 2:   Anim2D_RainbowFlow2((LED_Screen*)this, 10, false);              break;
-        case 3:   Anim1D_ColorFire((LED_Screen*)this, 1, 25);                     break;
+        case 0:   Anim1D_GlowFlow((LED_Screen*)this, 2, 1000);                                            break;
+        case 1:   Anim1D_RainbowFlow1((LED_Screen*)this, 5);                                              break;
+        case 2:   Anim2D_RainbowFlow2((LED_Screen*)this, 10, false);                                      break;
+        case 3:   Anim1D_ColorFire((LED_Screen*)this, 1, 25);                                             break;
         case 4:   ClearScreen(); Anim2D_PacManChompDanceThrough((LED_Screen*)this);                       break;
         case 5:   ClearScreen(); Anim2D_PacManChompDanceThroughPlusGhost((LED_Screen*)this);              break;
         case 6:   ClearScreen(); Anim2D_MsPacManChompDanceThrough((LED_Screen*)this);                     break;
         case 7:   ClearScreen(); Anim2D_SpaceInvaderDanceThrough((LED_Screen*)this);                      break;
         case 8:   ClearScreen(); Anim2D_LetterMoveThrough_BRC((LED_Screen*)this);                         break;
-        case 9:   ClearScreen(); Anim2D_SimpleFlame((LED_Screen*)this);                         break;
-        //case 9:   ClearScreen(); MegaManRunThrough();                             break;
-        //case 10:  ClearScreen(); MarioWarpThrough();                              break;
-        //case 11:  ClearScreen(); Tetris();                                        break;
+        case 9:   ClearScreen(); Anim2D_SimpleFlame((LED_Screen*)this);                                   break;
+        case 10:  ClearScreen(); Anim2D_PacManGhostEyesOnly((LED_Screen*)this);                           break;
         default:    PatternIndex = 0;                                             break;
       }
     }

@@ -923,3 +923,21 @@ void Image2D_SimpleFlame08(LED_Screen* screen, int x, int y, CRGB& flameColor1, 
   screen->SetLightsByColorRef(x + 1, y + 7, 2, flameColor2);
   screen->SetLightsByColorRef(x + 3, y + 7, 1, flameColor1);
 }
+
+void Image2D_PacManGhostEyes(LED_Screen* screen, int x, int y, CRGB& eyeWhite, CRGB& eyeBall)
+{
+  screen->SetLightsByColorRef(x - 3, y - 4, 2, eyeWhite); // START ROW -4
+  screen->SetLightsByColorRef(x + 3, y - 4, 2, eyeWhite);
+  screen->SetLightsByColorRef(x - 4, y - 3, 4, eyeWhite); // START ROW -3
+  screen->SetLightsByColorRef(x + 2, y - 3, 4, eyeWhite);
+  screen->SetLightsByColorRef(x - 4, y - 2, 2, eyeWhite); // START ROW -2
+  screen->SetLightsByColorRef(x - 2, y - 2, 2, eyeBall);
+  screen->SetLightsByColorRef(x + 2, y - 2, 2, eyeWhite);
+  screen->SetLightsByColorRef(x + 4, y - 2, 2, eyeBall);
+  screen->SetLightsByColorRef(x - 4, y - 1, 2, eyeWhite); // START ROW -1
+  screen->SetLightsByColorRef(x - 2, y - 1, 2, eyeBall);
+  screen->SetLightsByColorRef(x + 2, y - 1, 2, eyeWhite);
+  screen->SetLightsByColorRef(x + 4, y - 1, 2, eyeBall);
+  screen->SetLightsByColorRef(x - 3, y + 0, 2, eyeWhite); // START ROW +0
+  screen->SetLightsByColorRef(x + 3, y + 0, 2, eyeWhite);
+}
