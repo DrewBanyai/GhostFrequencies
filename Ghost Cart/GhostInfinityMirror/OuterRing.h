@@ -33,6 +33,13 @@ class OuterRing : public LED_Screen {
 
     const int VIRTUAL_LED_COUNT = LED_COUNT + 10; //  The number of Virtual LEDs to travel (AKA the loop will continue until the position passes this number, causing a delay before restarting)
 
+
+    inline void Input(NES_Controller* nesController) {
+      if (nesController->CheckButton(NES_SELECT_BUTTON))
+        if (SwitchPatterns())
+          Serial.println("Changing Outer Ring pattern!");
+    }
+
     void Render() {
         switch (PatternIndex)
         {

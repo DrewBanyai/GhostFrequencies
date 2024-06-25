@@ -123,10 +123,11 @@ void Anim2D_SimpleFlame(LED_Screen* screen, int x = 7, int y = 6, int frameLengt
 {
   int frame = screen->FrameAnimation.GetCurrentFrameIndex(frameLengthMillis, animationFrameCount);
 
-  CRGB flameColor1 = CRGB(GetColor(55, 0), GetColor(55, 1), GetColor(55, 2));
-  CRGB flameColor2 = CRGB(GetColor(4, 0), GetColor(4, 1), GetColor(4, 2));
+  CRGB flameColor1 = CRGB(GetColor(55, 0), GetColor(55, 1), GetColor(55, 2));     //  { 248, 136,   0 },  //  MechaKoopa Orange 1
+  CRGB flameColor2 = CRGB(GetColor(4, 0), GetColor(4, 1), GetColor(4, 2));        //  { 200, 200,   0 },  //  Yellow
   CRGB flameColor3 = CRGB(GetColor(61, 0), GetColor(61, 1), GetColor(61, 2));
   
+  screen->ClearScreen(); 
   switch (frame) {
     case 0: Image2D_SimpleFlame01(screen, x, y, flameColor1, flameColor2, flameColor3);   break;
     case 1: Image2D_SimpleFlame02(screen, x, y, flameColor1, flameColor2, flameColor3);   break;
@@ -145,5 +146,43 @@ void Anim2D_PacManGhostEyesOnly(LED_Screen* screen, int x = 6, int y = 7, int fr
   CRGB eyeWhiteColor = CRGB(GetColor(eyeWhite, 0), GetColor(eyeWhite, 1), GetColor(eyeWhite, 2));
   CRGB eyeBallColor = CRGB(GetColor(eyeBall, 0), GetColor(eyeBall, 1), GetColor(eyeBall, 2));
   
+  screen->ClearScreen(); 
   Image2D_PacManGhostEyes(screen, x, y, eyeWhiteColor, eyeBallColor);
+}
+
+void Anim2D_SimpleFlameColorFlow(LED_Screen* screen, int x = 7, int y = 6, int frameLengthMillis = 140, int animationFrameCount = 8, const int colorChangeSpeed = 1)
+{
+  static Color primaryColor(0, 0, 0);
+  primaryColor.ColorShift(colorChangeSpeed, frameLengthMillis);
+  CRGB primaryCRGB(primaryColor.R, primaryColor.G, primaryColor.B);
+  CRGB secondaryCRGB(int(primaryColor.R * 0.8), min(int(primaryColor.G * 1.33), 255), int(primaryColor.B * 0.8));
+  CRGB flameBottomBlueWhite = CRGB(GetColor(61, 0), GetColor(61, 1), GetColor(61, 2));
+
+  int frame = screen->FrameAnimation.GetCurrentFrameIndex(frameLengthMillis, animationFrameCount);
+  
+  screen->ClearScreen(); 
+  switch (frame) {
+    case 0: Image2D_SimpleFlame01(screen, x, y, primaryCRGB, secondaryCRGB, flameBottomBlueWhite);   break;
+    case 1: Image2D_SimpleFlame02(screen, x, y, primaryCRGB, secondaryCRGB, flameBottomBlueWhite);   break;
+    case 2: Image2D_SimpleFlame03(screen, x, y, primaryCRGB, secondaryCRGB, flameBottomBlueWhite);   break;
+    case 3: Image2D_SimpleFlame04(screen, x, y, primaryCRGB, secondaryCRGB, flameBottomBlueWhite);   break;
+    case 4: Image2D_SimpleFlame05(screen, x, y, primaryCRGB, secondaryCRGB, flameBottomBlueWhite);   break;
+    case 5: Image2D_SimpleFlame06(screen, x, y, primaryCRGB, secondaryCRGB, flameBottomBlueWhite);   break;
+    case 6: Image2D_SimpleFlame07(screen, x, y, primaryCRGB, secondaryCRGB, flameBottomBlueWhite);   break;
+    case 7: Image2D_SimpleFlame08(screen, x, y, primaryCRGB, secondaryCRGB, flameBottomBlueWhite);   break;
+  }
+}
+
+
+
+void Anim2D_TetrisLineClear(LED_Screen* screen, int rowIndex = 0, int frameLengthMillis = 334, int animationFrameCount = 2, int clearColor1 = 7, int clearColor2 = 0) {
+  int frame = screen->FrameAnimation.GetCurrentFrameIndex(frameLengthMillis, animationFrameCount);
+
+  CRGB clearColor_01 = CRGB(GetColor(clearColor1, 0), GetColor(clearColor1, 1), GetColor(clearColor1, 2));
+  CRGB clearColor_02 = CRGB(GetColor(clearColor2, 0), GetColor(clearColor2, 1), GetColor(clearColor2, 2));
+
+  switch(frame) {
+    case 0: screen->SetLightsByColorRef(0, rowIndex, screen->SCREEN_WIDTH, clearColor_01);   break;
+    case 1: screen->SetLightsByColorRef(0, rowIndex, screen->SCREEN_WIDTH, clearColor_02);   break;
+  }
 }

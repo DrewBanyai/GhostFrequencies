@@ -941,3 +941,7 @@ void Image2D_PacManGhostEyes(LED_Screen* screen, int x, int y, CRGB& eyeWhite, C
   screen->SetLightsByColorRef(x - 3, y + 0, 2, eyeWhite); // START ROW +0
   screen->SetLightsByColorRef(x + 3, y + 0, 2, eyeWhite);
 }
+
+void Image2D_TetrisLineClear(LED_Screen* screen, int rowIndex, CRGB& clearColor) {
+  screen->SetLightsByColorRef(0, rowIndex, screen->SCREEN_WIDTH, clearColor);
+}

@@ -55,13 +55,9 @@ void setup()
 void loop()
 {
   nesController.ReadController();
-  if (nesController.CheckButton(NES_A_BUTTON))
-    if (ghostScreen.SwitchPatterns())
-      Serial.println("Changing Ghost Screen pattern!");
-
-  if (nesController.CheckButton(NES_B_BUTTON))
-    if (outerRing.SwitchPatterns())
-      Serial.println("Changing Outer Ring pattern!"); 
+  
+  ghostScreen.Input(&nesController);
+  outerRing.Input(&nesController);
 
   ghostScreen.Render();
   outerRing.Render();

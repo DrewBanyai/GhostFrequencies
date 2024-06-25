@@ -1,3 +1,5 @@
+#pragma once
+
 #define NES_A_BUTTON                0
 #define NES_B_BUTTON                1
 #define NES_SELECT_BUTTON           2

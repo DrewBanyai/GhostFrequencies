@@ -3,10 +3,13 @@
 #include "LED_Screen.h"
 #include "Animations_1D.h"
 #include "Animations_2D.h"
+#include "Game2D_Tetris.h"
+#include "NES_Controller.h"
 #include "FrameAnimation.h"
 
 class GhostScreen : public LED_Screen{
   private:
+    static const int TETRIS_GAME_INDEX = 12;
     static const int SCREEN_WIDTH = 14;
     static const int SCREEN_HEIGHT = 14;
     static const int VIRTUAL_LED_COUNT = SCREEN_WIDTH * SCREEN_HEIGHT; //  The number of Virtual LEDs when X,Y positions are translated
@@ -16,8 +19,7 @@ class GhostScreen : public LED_Screen{
     static const unsigned int GHOST_SCREEN_LED_COUNT = 158;
     static const unsigned int VIRTUAL_LEDS_ADDITION = 0;
     CRGB GhostScreenLEDs[GHOST_SCREEN_LED_COUNT];
-    GhostScreen() : LED_Screen(GHOST_SCREEN_LED_COUNT, GhostScreenLEDs, "Ghost Screen", 11) {}
-
+    GhostScreen() : LED_Screen(GHOST_SCREEN_LED_COUNT, GhostScreenLEDs, "Ghost Screen", 13) {}
 
     void Initialize(bool ledChutesLayout) {
       //  NOTE: Because we translate the screen virtual indices prior to passing them in, we must set the Chutes value here as well before passing it in
@@ -25,6 +27,16 @@ class GhostScreen : public LED_Screen{
 
       TranslateScreenVirtualIndices();
       LED_Screen::SetScreenIndexTranslations(ScreenIndexTranslated);
+    }
+
+    inline void Input(NES_Controller* nesController) {
+      if (nesController->CheckButton(NES_START_BUTTON))
+        if (SwitchPatterns())
+          Serial.println("Changing Ghost Screen pattern!");
+
+      if (PatternIndex == TETRIS_GAME_INDEX) {
+        TETRIS_INSTANCE.Input(nesController);
+      }
     }
 
     inline void Render() {
@@ -39,9 +51,11 @@ class GhostScreen : public LED_Screen{
         case 6:   ClearScreen(); Anim2D_MsPacManChompDanceThrough((LED_Screen*)this);                     break;
         case 7:   ClearScreen(); Anim2D_SpaceInvaderDanceThrough((LED_Screen*)this);                      break;
         case 8:   ClearScreen(); Anim2D_LetterMoveThrough_BRC((LED_Screen*)this);                         break;
-        case 9:   ClearScreen(); Anim2D_SimpleFlame((LED_Screen*)this);                                   break;
-        case 10:  ClearScreen(); Anim2D_PacManGhostEyesOnly((LED_Screen*)this);                           break;
-        default:    PatternIndex = 0;                                             break;
+        case 9:   Anim2D_SimpleFlame((LED_Screen*)this);                                                  break;
+        case 10:  Anim2D_SimpleFlameColorFlow((LED_Screen*)this);                                         break;
+        case 11:  Anim2D_PacManGhostEyesOnly((LED_Screen*)this);                                          break;
+        case TETRIS_GAME_INDEX:   Game2D_Tetris((LED_Screen*)this);                                       break;
+        default:   PatternIndex = 0;                                                                      break;
       }
     }
 

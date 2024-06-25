@@ -1,3 +1,13 @@
+#pragma once
+
+class Position2D {
+  public:
+  Position2D() { X = -1; Y = -1; }
+  Position2D(int x, int y) { X = x; Y = y; }
+    int X;
+    int Y;
+};
+
 inline void SetStrip(CRGB* leds, const int ledCount, CRGB color) { fill_solid(leds, ledCount, color); }
 inline void ClearStrip(CRGB* leds, const int ledCount) { SetStrip(leds, ledCount, CRGB::Black); }
 
@@ -108,6 +118,10 @@ const byte COMMON_COLORS[COMMON_COLOR_COUNT][3] =
 };
 
 inline byte GetColor(byte colorIndex, int part) { return COMMON_COLORS[colorIndex][part]; }
+inline CRGB GetCRGBColor(byte colorIndex) {
+  byte* colorArray = COMMON_COLORS[colorIndex];
+  return CRGB(colorArray[0], colorArray[1], colorArray[2]);
+}
 
 inline void PrintColor(int r, int g, int b) {
   Serial.print(r);
