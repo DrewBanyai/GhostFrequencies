@@ -4,13 +4,13 @@
 #include "GhostScreen.h"
 #include "OuterRing.h"
 
-#define GHOST_SCREEN_DATA_PIN         2         //  The WS2801 string data pin for the inner ghost screen
-#define GHOST_SCREEN_CLOCK_PIN        3         //  The WS2801 string clock pin for the inner ghost screen
-#define OUTER_RING_DATA_PIN           5         //  The WS2801 string data pin for the outer ring lights
-#define OUTER_RING_CLOCK_PIN          7        //  The WS2801 string clock pin for the outer ring lights
-#define NES_DATA_PIN                  10         //  The Data pin for the NES Controller
-#define NES_CLOCK_PIN                 11         //  The Clock pin for the NES Controller
-#define NES_LATCH_PIN                 12         //  The Latch pin for the NES Controller
+#define GHOST_SCREEN_DATA_PIN         2         //  The WS2801 string data pin for the inner ghost screen (Ideal Green Wired)
+#define GHOST_SCREEN_CLOCK_PIN        3         //  The WS2801 string clock pin for the inner ghost screen (Ideal Blue Wired)
+#define OUTER_RING_DATA_PIN           5         //  The WS2801 string data pin for the outer ring lights (Ideal Green Wired)
+#define OUTER_RING_CLOCK_PIN          6        //  The WS2801 string clock pin for the outer ring lights (Ideal Blue Wired)
+#define NES_DATA_PIN                  10         //  The Data pin for the NES Controller (Ideal Green Wired)
+#define NES_CLOCK_PIN                 11         //  The Clock pin for the NES Controller (Ideal Blue Wired)
+#define NES_LATCH_PIN                 12         //  The Latch pin for the NES Controller (Ideal Yellow Wired)
 
 #define LED_BRIGHTNESS                20         //  The number (0 to 200) for the brightness setting)
 
